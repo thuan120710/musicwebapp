@@ -1,3 +1,12 @@
+![spotify7](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/8afe50a2-82ae-4ab3-8cda-f7b45de39671)
+![spotify6](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/9ef27591-d4a9-4232-931f-0c56f4bcb5f8)
+![spotify4](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/cf4b9f25-e775-49d5-90f4-4a0f18e094f4)
+![spotify3](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/3c67ad9c-9c73-474b-8437-92a4c36be4df)
+![spotify2](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/a4faa481-686f-46fa-af11-a3fe4c42837c)
+![spotify1](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/a7cc35bd-39b2-4ecb-a265-6e8b5916c7a5)
+![spotify10](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/139445d0-0669-463c-97cc-5a5936f31880)
+![spotify9](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/6daa80ad-1c71-4943-ab82-6110e89f3293)
+![spotify8](https://github.com/Mathew-Tomy/Mern-Stack-Music-App/assets/159645212/011e3a90-fc09-4b51-bd51-5117fab3ae00)
 # Mern-Stack-Music-App
 The Full Stack MERN Music App is a modern web application that allows users to discover, listen to, and manage their favorite songs. Built using the MERN (MongoDB, Express.js, React.js, Node.js) stack, this application offers a seamless and immersive music experience.
 User Authentication: Users can sign up, log in, and securely authenticate themselves to access the app's features.
