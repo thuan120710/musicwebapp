@@ -22,7 +22,6 @@ function MenuPlayList() {
                 <BsMusicNoteList />
               </i>
               <p>{list.name}</p>
-            
             </div>
           ))}
       </div>

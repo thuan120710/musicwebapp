@@ -4,68 +4,50 @@ import { ReactComponent as Pause } from "../assets/pause.svg";
 import { ReactComponent as Next } from "../assets/next.svg";
 import { ReactComponent as Prev } from "../assets/prev.svg";
 import {
-    FaRegHeart,
-    FaHeart,
-    FaForward,
-    FaStepForward,
-    FaStepBackward,
-    FaBackward,
-    FaPlay,
-    FaPause,
-    FaShareAlt,
-  } from "react-icons/fa";
+  FaRegHeart,
+  FaHeart,
+  FaForward,
+  FaStepForward,
+  FaStepBackward,
+  FaBackward,
+  FaPlay,
+  FaPause,
+  FaShareAlt,
+} from "react-icons/fa";
 const AudioControls = ({
   isPlaying,
   onPlayPauseClick,
   onPrevClick,
-  onNextClick
-
+  onNextClick,
 }) => (
-   
-
   <div className="audio-controls">
-     <i
- 
-      className="prev"
-      aria-label="Previous"
-      onClick={onPrevClick}
-    >
+    <i className="prev" aria-label="Previous" onClick={onPrevClick}>
       <Prev />
-   
-   
-                <FaBackward />
-              </i>
-  
+
+      <FaBackward />
+    </i>
+
     {isPlaying ? (
       <i
-      
         className="pause"
         onClick={() => onPlayPauseClick(false)}
         aria-label="Pause"
       >
-       
         <FaPause />
       </i>
     ) : (
       <i
-       
         className="play"
         onClick={() => onPlayPauseClick(true)}
         aria-label="Play"
       >
-         <FaPlay />
+        <FaPlay />
       </i>
     )}
-    <i
-     
-      className="next"
-      aria-label="Next"
-      onClick={onNextClick}
-    >
-       <FaStepForward />
+    <i className="next" aria-label="Next" onClick={onNextClick}>
+      <FaStepForward />
     </i>
   </div>
-
 );
 
 export default AudioControls;

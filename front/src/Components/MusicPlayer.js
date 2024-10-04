@@ -13,15 +13,22 @@ import {
 } from "react-icons/fa";
 import { BsFillVolumeUpFill, BsMusicNoteList } from "react-icons/bs";
 import { BsDownload } from "react-icons/bs";
-import { Songs } from "./Songs";
-import TrackList from "./TrackList";
-import { fetchFavorites, deleteFavorites } from '../Admin/actions/FavoritesAction';
-import { connect } from 'react-redux';
-function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongIndex,currentSongId,playNextSong,playPreviousSong}) 
+import { connect } from "react-redux";
+import {
+  fetchFavorites,
+  deleteFavorites,
+} from "../Admin/actions/FavoritesAction";
 
-// function MusicPlayer({ song, imgSrc, auto}) 
-
-{
+function MusicPlayer({
+  song,
+  imgSrc,
+  auto,
+  currentSongIndex,
+  setCurrentSongIndex,
+  currentSongId,
+  playNextSong,
+  playPreviousSong,
+}) {
   const [isLove, setLove] = useState(false);
   const [isPlaying, setPlay] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -29,15 +36,9 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
   const [volume, setVolume] = useState(50);
   const [favorites, setFavorites] = useState([]);
 
-
-
   const audioPlayer = useRef();
   const progressBar = useRef();
   const animationRef = useRef();
-  // useEffect(() => {
-    
-  //   props.fetchFavorites();
-  // }, []);
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
@@ -58,12 +59,6 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
     }
   };
 
-  // const whilePlaying = () => {
-  //   progressBar.current.value = audioPlayer.current.currentTime;
-  //   changeCurrentTime();
-  //   animationRef.current = requestAnimationFrame(whilePlaying);
-  // };
-  
   const whilePlaying = () => {
     if (audioPlayer.current) {
       progressBar.current.value = audioPlayer.current.currentTime;
@@ -71,7 +66,6 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
       animationRef.current = requestAnimationFrame(whilePlaying);
     }
   };
-  
 
   const calculateTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -91,51 +85,60 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
       "--played-width",
       `${(progressBar.current.value / duration) * 100}%`
     );
-
     setCurrenttime(progressBar.current.value);
   };
 
-
-
   const handleVolumeChange = (event) => {
-    const volumeValue = event.target.value / 100; // Scale the volume from [0, 100] to [0, 1]
+    const volumeValue = event.target.value / 100;
     audioPlayer.current.volume = volumeValue;
-    setVolume(event.target.value); // Update the state with the new volume value
+    setVolume(event.target.value);
   };
-  
+
   const changeSongLove = (id) => {
-    setLove(!isLove); // Toggle the love icon
-  
-    // Check if favorites array is empty
+    setLove(!isLove);
     if (favorites.length === 0) {
-      // Handle the case where favorites is empty
-      // You might want to add the song to favorites or fetch favorites from the server
-      console.log('Favorites is empty');
-      // For example, you might want to fetch favorites here:
-      // fetchFavorites(); // Directly call the action creator if available in this file
+      console.log("Favorites is empty");
       return;
     }
-  
-    // Check if the song with the given id exists in the favorites list
     const isFavorite = favorites.some((favorite) => favorite.song_id === id);
-  
-    // If the song is in favorites, delete it
     if (isFavorite) {
       // deleteFavorites(id); // Directly call the action creator if available in this file
     }
   };
-  
+
+  // Hàm xử lý khi bài hát kết thúc
+  const handleSongEnd = async (songId, userId) => {
+    try {
+      await fetch("http://localhost:4000/api/track-listened", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ songId, userId }),
+      });
+    } catch (error) {
+      console.error("Error tracking listened song:", error);
+    }
+    playNextSong(); // Tự động chuyển bài hát khi kết thúc
+  };
+
   return (
     <div className="musicPlayer">
       <div className="songImage">
-        <img src={`http://localhost:4000/${imgSrc}`}  alt={currentSongId} />
+        <img src={`http://localhost:4000/${imgSrc}`} alt={currentSongId} />
       </div>
       <div className="songAttributes">
-        <audio src={`http://localhost:4000/${song}`}  preload="metadata" ref={audioPlayer} />
+        <audio
+          src={`http://localhost:4000/${song}`}
+          preload="metadata"
+          ref={audioPlayer}
+          onEnded={() => handleSongEnd(currentSongId, "userId")} // Gọi API khi bài hát kết thúc
+        />
 
         <div className="top">
           <div className="left">
-            <div className="loved" onClick={() => changeSongLove(currentSongId)}>
+            <div
+              className="loved"
+              onClick={() => changeSongLove(currentSongId)}
+            >
               {isLove ? (
                 <i>
                   <FaRegHeart />
@@ -146,34 +149,27 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
                 </i>
               )}
             </div>
-            <a
-    href={song}  // Provide the URL of the audio file
-    download="audio.mp3"  // Specify the filename for the downloaded file
-    className="download"
-  >
-    <BsDownload />
-  </a>
+            <a href={song} download="audio.mp3" className="download">
+              <BsDownload />
+            </a>
             <i>
-          <BsFillVolumeUpFill />
-        </i>
+              <BsFillVolumeUpFill />
+            </i>
 
-        <input
-        type="range"
-        min="0"
-        max="100"
-        value={volume}
-        onChange={handleVolumeChange}
-      
-      />
-        <i>
-          <BsMusicNoteList />
-        </i>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={handleVolumeChange}
+            />
+            <i>
+              <BsMusicNoteList />
+            </i>
           </div>
 
           <div className="middle">
-            
-            <div className="back" >
-              {/* <i value={song.id}></i> */}
+            <div className="back">
               <i onClick={() => playPreviousSong(currentSongId)}>
                 <FaStepBackward />
               </i>
@@ -192,16 +188,15 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
                 </i>
               )}
             </div>
-            
+
             <div className="forward">
-            <i onClick={() => playNextSong(currentSongId)}>
+              <i onClick={() => playNextSong(currentSongId)}>
                 <FaForward />
               </i>
               <i onClick={() => playNextSong(currentSongId)}>
                 <FaStepForward />
               </i>
             </div>
-         
           </div>
 
           <div className="right">
@@ -232,10 +227,10 @@ function MusicPlayer({ song, imgSrc, auto, currentSongIndex , setCurrentSongInde
   );
 }
 
-//export default MusicPlayer;
 const mapStateToProps = (state) => ({
   favorites: state.FavoritesAdmin.favorites || [],
-
 });
 
-export default connect(mapStateToProps, {  fetchFavorites, deleteFavorites })(MusicPlayer);
+export default connect(mapStateToProps, { fetchFavorites, deleteFavorites })(
+  MusicPlayer
+);

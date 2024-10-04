@@ -296,4 +296,46 @@
   .leftMenu .menuContainer ul li {
     margin: 25px 0;
   }
+  .playlist-section {
+    display: flex;
+  }
+  
+  .playlist-list {
+    width: 30%;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .playlist-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .playlist-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .song-list {
+    width: 70%;
+    padding: 10px;
+  }
+  
+  .song-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .song-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .song-item button:hover {
+    background-color: #0056b3;
+  }
 }

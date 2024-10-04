@@ -2,123 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
-import { registerRoute } from "../../utils/APIRoutes";
-
-export default function Register() {
-  const history = useHistory();
-
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
-
-  const [values, setValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      history.push("/admin");
-    }
-  }, [history]);
-
-  const handleChange = (event) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
-  };
-
-  const handleValidation = () => {
-    const { password, confirmPassword, username ,email} = values;
-    if (password !== confirmPassword) {
-      console.error("Password and confirm password should be the same.", toastOptions);
-      return false;
-    } else if (username.length < 3) {
-      console.error("Username should be at least 3 characters long.", toastOptions);
-      return false;
-    } else if (password.length < 8) {
-      console.error("Password should be at least 8 characters long.", toastOptions);
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (handleValidation()) {
-      const { username, password , email } = values;
-      try {
-        const response = await axios.post(registerRoute, {
-          username,
-          email,
-          password,
-        });
-        
-        if (response && response.data && response.data.status === false) {
-          console.error(response.data.msg, toastOptions);
-          
-        }
-        
-        if (response && response.data && response.data.status === true) {
-          localStorage.setItem(
-            process.env.REACT_APP_LOCALHOST_KEY,
-            JSON.stringify(response.data.user)
-          );
-          history.push("/admin");
-        }
-      } catch (error) {
-        console.error("An error occurred while registering:", error);
-        console.error("Response:", error.response);
-      }
-    }
-  };
-  
-  return (
-    <FormContainer>
-      <form onSubmit={handleSubmit}>
-        <div className="brand">
-          <h1>snappy</h1>
-        </div>
-        <input
-          type="text"
-          placeholder="Username"
-          name="username"
-          value={values.username}
-          onChange={handleChange}
-        />
-         <input
-          type="text"
-          placeholder="email"
-          name="email"
-          value={values.email}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          value={values.confirmPassword}
-          onChange={handleChange}
-        />
-        <button type="submit">Create User</button>
-        <span>
-          Already have an account? <Link to="/admin">Login</Link>.
-        </span>
-      </form>
-    </FormContainer>
-  );
-}
+import { registerRoute } from "../../utils/APIRoutes"; // Ensure this is correctly defined
 
 const FormContainer = styled.div`
   height: 100vh;
@@ -135,7 +19,7 @@ const FormContainer = styled.div`
     align-items: center;
     gap: 1rem;
     justify-content: center;
-    
+
     h1 {
       color: white;
       text-transform: uppercase;
@@ -190,3 +74,109 @@ const FormContainer = styled.div`
     }
   }
 `;
+
+export default function Register() {
+  const history = useHistory();
+
+  const [values, setValues] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  useEffect(() => {
+    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+      history.push("/admin");
+    }
+  }, [history]);
+
+  const handleChange = (event) => {
+    setValues({ ...values, [event.target.name]: event.target.value });
+  };
+
+  const handleValidation = () => {
+    const { password, confirmPassword, username, email } = values;
+    if (password !== confirmPassword) {
+      console.error("Password and confirm password should be the same.");
+      return false;
+    } else if (username.length < 3) {
+      console.error("Username should be at least 3 characters long.");
+      return false;
+    } else if (password.length < 8) {
+      console.error("Password should be at least 8 characters long.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (handleValidation()) {
+      const { username, password, email } = values;
+      try {
+        const response = await axios.post(registerRoute, {
+          username,
+          email,
+          password,
+        });
+
+        if (response.data.status === false) {
+          console.error(response.data.msg);
+        }
+
+        if (response.data.status === true) {
+          localStorage.setItem(
+            process.env.REACT_APP_LOCALHOST_KEY,
+            JSON.stringify(response.data.user)
+          );
+          history.push("/admin");
+        }
+      } catch (error) {
+        console.error("An error occurred while registering:", error);
+      }
+    }
+  };
+
+  return (
+    <FormContainer>
+      <form onSubmit={handleSubmit}>
+        <div className="brand">
+          <h1>snappy</h1>
+        </div>
+        <input
+          type="text"
+          placeholder="Username"
+          name="username"
+          value={values.username}
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          name="email"
+          value={values.email}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={values.password}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          value={values.confirmPassword}
+          onChange={handleChange}
+        />
+        <button type="submit">Create User</button>
+        <span>
+          Already have an account? <Link to="/admin">Login</Link>.
+        </span>
+      </form>
+    </FormContainer>
+  );
+}

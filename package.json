@@ -1,0 +1,12 @@
+{
+  "name": "mern-stack-music-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd api && npm start",
+    "client": "cd front && npm start"
+  },
+  "dependencies": {
+    "concurrently": "^6.0.0"
+  }
+}

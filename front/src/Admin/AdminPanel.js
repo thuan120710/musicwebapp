@@ -9,26 +9,22 @@ import { connect } from "react-redux";
 import { getAdminProfile } from "./actions/AuthAdminAction";
 import { BrowserRouter, Route } from "react-router-dom";
 import Profile from "./component/Layout/Profile";
-import userTable from './component/Layout/CustomerTable'
-import {getItemAdmin} from './actions/GetItemAdmin'
-import FoodTable from './component/Layout/FoodTable'
-import AdminTable from './component/Layout/AdminTable'
-const AdminPanel = props => {
+import userTable from "./component/Layout/CustomerTable";
+import { getItemAdmin } from "./actions/GetItemAdmin";
+import FoodTable from "./component/Layout/FoodTable";
+import AdminTable from "./component/Layout/AdminTable";
+const AdminPanel = (props) => {
   const getAllItems = async () => {
     await props.getAdminProfile();
     await props.getItemAdmin();
-  }
-  
+  };
 
   useEffect(() => {
-    getAllItems()
+    getAllItems();
   }, []);
 
-  
-
-  if (!props.authAdmin.token || props.authAdmin.token === undefined ) {
-    
-    return <Login/>;
+  if (!props.authAdmin.token || props.authAdmin.token === undefined) {
+    return <Login />;
   } else {
     return (
       <div>
@@ -42,6 +38,7 @@ const AdminPanel = props => {
             <Route path="/CustomerTable" component={userTable} exact />
             <Route path="/FoodTable" component={FoodTable} exact />
             <Route path="/AdminTable" component={AdminTable} exact />
+
             <Footer />
           </div>
         </BrowserRouter>
@@ -49,10 +46,9 @@ const AdminPanel = props => {
     );
   }
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return state;
 };
-export default connect(
-  mapStateToProps,
-  { getAdminProfile ,getItemAdmin}
-)(AdminPanel);
+export default connect(mapStateToProps, { getAdminProfile, getItemAdmin })(
+  AdminPanel
+);

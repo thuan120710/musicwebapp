@@ -16,10 +16,15 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePic: {
-      type: String,
-      default: "",
-    },
+    // profilePic: {
+    //   type: String,
+    //   default: "",
+    // },
+    // role: {
+    //   type: String,
+    //   enum: ["user", "editor", "admin"], // Defines the available roles
+    //   default: "user", // Default role assigned to a new user
+    // },
   },
   { timestamps: true }
 );

@@ -1,0 +1,64 @@
+.suggested-songs {
+    padding: 20px;
+    background-color: #f8f9fa;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .song-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .song-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .song-image img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .song-info {
+    margin-top: 10px;
+  }
+  
+  .song-name {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .artist {
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .song-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .play-btn, .favorite-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .favorite-btn {
+    color: #dc3545;
+  }
+  

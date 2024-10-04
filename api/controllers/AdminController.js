@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const User = require("../models/AdminUser");
 const bcrypt = require("bcrypt");
-const multer  = require('multer');
+const multer = require("multer");
 const verify = require("./verifyToken");
 const upload = multer();
 
@@ -12,7 +12,7 @@ const generateToken = (user) => {
     userId: user._id,
     username: user.username,
   };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 module.exports.login = async (req, res, next) => {
@@ -22,12 +22,16 @@ module.exports.login = async (req, res, next) => {
     // Find user by username
     const user = await User.findOne({ username });
     if (!user)
-      return res.status(401).json({ msg: "Incorrect Username or Password", status: false });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect Username or Password", status: false });
 
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
-      return res.status(401).json({ msg: "Incorrect Username or Password", status: false });
+      return res
+        .status(401)
+        .json({ msg: "Incorrect Username or Password", status: false });
 
     // If username and password are correct, generate token and send response
     const token = generateToken(user);
@@ -37,39 +41,34 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-
-
-module.exports.register = async (req, res, next) => {
+module.exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if the username already exists
-    const emailCheck = await User.findOne({ email });
-    if (emailCheck) {
-      return res.status(400).json({ message: "Email already exists" });
+    if (!username || !email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username, Email and Password are required" });
     }
 
-
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-    // Create a new user
-    const user = await User.create({ username, email, password: hashedPassword });
-
-    // Omit password field from the response
-    user.password = undefined;
-
-    // Send response
-    return res.status(201).json({ message: "User registered successfully", user });
+    await user.save();
+    res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
-    // Handle errors
-    next(error);
+    console.error("Error in registration:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.logOut = (req, res, next) => {
   try {
-    res.clearCookie('token').json('Logged out');
+    res.clearCookie("token").json("Logged out");
   } catch (ex) {
     next(ex);
   }
@@ -108,7 +107,6 @@ module.exports.logOut = (req, res, next) => {
 //   }
 // };
 
-
 // module.exports.setAvatar = async (req, res, next) => {
 //   try {
 //     const userId = req.params.id;
@@ -129,4 +127,3 @@ module.exports.logOut = (req, res, next) => {
 //     next(ex);
 //   }
 // };
-

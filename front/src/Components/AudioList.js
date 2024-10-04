@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { FaHeadphones, FaRegClock, FaRegHeart, FaHeart } from "react-icons/fa";
 import "../styles/LeftMenu.css";
 import MusicPlayer from "./MusicPlayer";
-import { fetchSong } from '../Admin/actions/SongAction';
-import { connect } from 'react-redux';
+import SuggestedSongs from "./SuggestedSongs"; // Import component SuggestedSongs
+import { fetchSong } from "../Admin/actions/SongAction";
+import { connect } from "react-redux";
 
 const AudioList = ({ item }) => {
   const [songs, setSongs] = useState([]);
@@ -12,13 +13,19 @@ const AudioList = ({ item }) => {
   const [auto, setAuto] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0); // Track the index of the current song
 
+  // Hàm để xử lý khi chọn bài hát từ danh sách gợi ý
+  const handleSuggestedSongSelect = (selectedSong) => {
+    setSong(selectedSong.song);
+    setImage(selectedSong.imgSrc);
+    setAuto(true); // Bật tự động phát nhạc
+  };
+
   // Update song and image when item changes
   useEffect(() => {
     if (item && item.length > 0) {
-   
       setSongs(item); // Update songs state with item data
-      setSong(item[0]?.song || ''); // Use optional chaining to prevent errors
-      setImage(item[0]?.imgSrc || ''); // Use optional chaining to prevent errors
+      setSong(item[0]?.song || ""); // Use optional chaining to prevent errors
+      setImage(item[0]?.imgSrc || ""); // Use optional chaining to prevent errors
     }
   }, [item]);
 
@@ -83,18 +90,24 @@ const AudioList = ({ item }) => {
               </div>
               <div className="section">
                 <p className="songName">
-                  {song?.songName} <span className="songSpan">{song?.artist}</span>
+                  {song?.songName}{" "}
+                  <span className="songSpan">{song?.artist}</span>
                 </p>
 
                 <div className="hits">
-                  {/* <p className="hit">
-                    <i><FaHeadphones /></i> 95,490,102
-                  </p>
-                  <p className="duration">
-                    <i><FaRegClock /></i> 03:04
-                  </p> */}
-                  <p className="favourite" onClick={() => changeFavourite(song?.index)}>
-                    {song?.favourite ? <i><FaHeart /></i> : <i><FaRegHeart /></i>}
+                  <p
+                    className="favourite"
+                    onClick={() => changeFavourite(song?.index)}
+                  >
+                    {song?.favourite ? (
+                      <i>
+                        <FaHeart />
+                      </i>
+                    ) : (
+                      <i>
+                        <FaRegHeart />
+                      </i>
+                    )}
                   </p>
                 </div>
               </div>
@@ -107,12 +120,18 @@ const AudioList = ({ item }) => {
         song={song}
         imgSrc={img}
         autoplay={auto}
-        
         setCurrentSongIndex={setCurrentSongIndex}
-        currentSongId ={currentSongIndex >= 0 && currentSongIndex < songs.length ? songs[currentSongIndex]._id : null}
+        currentSongId={
+          currentSongIndex >= 0 && currentSongIndex < songs.length
+            ? songs[currentSongIndex]._id
+            : null
+        }
         playNextSong={playNextSong}
         playPreviousSong={playPreviousSong}
       />
+
+      {/* Gợi ý nhạc */}
+      <SuggestedSongs onSongSelect={handleSuggestedSongSelect} />
     </div>
   );
 };

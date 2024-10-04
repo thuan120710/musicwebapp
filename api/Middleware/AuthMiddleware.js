@@ -1,15 +1,26 @@
-// middleware/authMiddleware.js
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-function AuthMiddleware(req, res, next) {
-    // Check if user is authenticated
-    if (req.isAuthenticated()) {
-      // If authenticated, proceed to the next middleware/route handler
-      return next();
-    } else {
-      // If not authenticated, respond with a 401 Unauthorized status
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+async function AuthMiddleware(req, res, next) {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ error: "Authentication required" });
   }
-  
-  module.exports = AuthMiddleware;
-  
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      throw new Error();
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+}
+
+module.exports = AuthMiddleware;

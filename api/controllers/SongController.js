@@ -1,7 +1,7 @@
-const Song = require('../models/Song');
-const multer = require('multer');
-const upload = require('../Middleware/uploadMiddleware'); // Import the Multer middleware
-const fs = require('fs');
+const Song = require("../models/Song");
+const multer = require("multer");
+const upload = require("../Middleware/uploadMiddleware"); // Import the Multer middleware
+const fs = require("fs");
 // Controller function to fetch all songs
 exports.getSongs = async (req, res) => {
   try {
@@ -42,8 +42,8 @@ exports.createSongs = async (req, res) => {
   try {
     // Handle potential errors during upload
     uploadStorage.fields([
-      { name: 'song', maxCount: 1 },
-      { name: 'imgSrc', maxCount: 1 }
+      { name: "song", maxCount: 1 },
+      { name: "imgSrc", maxCount: 1 },
     ])(req, res, async (err) => {
       if (err) {
         return res.status(400).json({ error: err.message }); // Use err.message for more details
@@ -54,15 +54,24 @@ exports.createSongs = async (req, res) => {
 
       // Check if uploaded files exist
       if (!req.files) {
-        return res.status(400).json({ error: 'No files uploaded' });
+        return res.status(400).json({ error: "No files uploaded" });
       }
 
       // Extract file paths (assuming successful upload)
-      const songFilePath = req.files['song'][0].path; // File path of the uploaded song
-      const imgFilePath = req.files['imgSrc'][0].path; // File path of the uploaded image
+      const songFilePath = req.files["song"][0].path; // File path of the uploaded song
+      const imgFilePath = req.files["imgSrc"][0].path; // File path of the uploaded image
 
       // Create new song object
-      const song = new Song({ favourite, category, type, songName, artist, song: songFilePath, imgSrc: imgFilePath, color });
+      const song = new Song({
+        favourite,
+        category,
+        type,
+        songName,
+        artist,
+        song: songFilePath,
+        imgSrc: imgFilePath,
+        color,
+      });
 
       // Save song to database
       const savedSong = await song.save();
@@ -76,13 +85,12 @@ exports.createSongs = async (req, res) => {
 };
 // Controller function to create a new song
 
-
 exports.updateSongDetails = async (req, res) => {
   try {
     // Handle potential errors during upload
     uploadStorage.fields([
-      { name: 'song', maxCount: 1 },
-      { name: 'imgSrc', maxCount: 1 }
+      { name: "song", maxCount: 1 },
+      { name: "imgSrc", maxCount: 1 },
     ])(req, res, async (err) => {
       if (err) {
         return res.status(400).json({ error: err.message }); // Use err.message for more details
@@ -93,17 +101,28 @@ exports.updateSongDetails = async (req, res) => {
 
       // Check if uploaded files exist
       if (!req.files) {
-        return res.status(400).json({ error: 'No files uploaded' });
+        return res.status(400).json({ error: "No files uploaded" });
       }
 
       // Extract file paths (assuming successful upload)
-      const songFilePath = req.files['song'][0].path; // File path of the uploaded song
-      const imgFilePath = req.files['imgSrc'][0].path; // File path of the uploaded image
+      const songFilePath = req.files["song"][0].path; // File path of the uploaded song
+      const imgFilePath = req.files["imgSrc"][0].path; // File path of the uploaded image
 
       // Find the song by ID and update its details
-      const updatedSong = await Song.findByIdAndUpdate(req.params.id, {
-        favourite, category, type, songName, artist, song: songFilePath, imgSrc: imgFilePath, color
-      }, { new: true }); // { new: true } returns the updated document
+      const updatedSong = await Song.findByIdAndUpdate(
+        req.params.id,
+        {
+          favourite,
+          category,
+          type,
+          songName,
+          artist,
+          song: songFilePath,
+          imgSrc: imgFilePath,
+          color,
+        },
+        { new: true }
+      ); // { new: true } returns the updated document
 
       res.status(200).json({ updatedSong });
     });
