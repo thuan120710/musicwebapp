@@ -1,107 +1,90 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
-
-body {
-  
-  font-family: 'Open Sans', sans-serif;
-}
-
-.login {
-  width: 400px;
-  margin: 16px auto;
-  font-size: 16px;
-  margin-left: 450px;
-
-}
-
-/* Reset top and bottom margins from certain elements */
-.login-header,
-.login p {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-/* The triangle form is achieved by a CSS hack */
-.login-triangle {
-  width: 0;
-  margin-right: auto;
-  margin-left: auto;
-  border: 12px solid transparent;
-  border-bottom-color: #28d;
-}
-
-.login-header {
-  background: #28d;
-  padding: 20px;
-  font-size: 1.4em;
-  font-weight: normal;
-  text-align: center;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-.login-container {
-  background: #ebebeb;
-  padding: 12px;
-}
-
-/* Every row inside .login-container is defined with p tags */
-.login p {
-  padding: 12px;
-}
-
-.login input {
+/* Reset toàn bộ các margin và padding mặc định */
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  display: block;
+}
+
+/* Đặt chiều cao và chiều rộng của toàn bộ trang */
+html,
+body {
+  height: 100%;
   width: 100%;
-  border-width: 1px;
-  border-style: solid;
-  padding: 16px;
-  outline: 0;
-  font-family: inherit;
-  font-size: 0.95em;
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(145deg, #0f172a, #1e293b); /* Màu nền xanh tối */
+  color: #cbd5e1;
 }
 
-.login input[type="text"],
-.login input[type="password"] {
-  background: #fff;
-  border-color: #bbb;
-  color: #555;
+/* Toàn bộ giao diện container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(145deg, #0f172a, #1e293b); /* Xanh tối */
 }
 
-/* Text fields' focus effect */
-.login input[type="email"]:focus,
-.login input[type="password"]:focus {
-  border-color: #888;
+/* Form đăng nhập */
+.login-form {
+  background-color: #1e293b; /* Màu nền form */
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 400px;
 }
 
-.login input[type="submit"] {
-  background: #28d;
-  border-color: transparent;
-  color: #fff;
-  cursor: pointer;
-}
-
-.login input[type="submit"]:hover {
-  background: #17c;
-}
-
-/* Buttons' focus effect */
-.login input[type="submit"]:focus {
-  border-color: #05a;
-}
-
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  max-width: 300px;
-  margin: auto;
+/* Tiêu đề Login */
+.login-title {
+  font-size: 2rem;
+  color: #38bdf8; /* Xanh nhạt */
   text-align: center;
-  font-family: arial;
+  margin-bottom: 1rem;
 }
 
-.title {
-  color: grey;
-  font-size: 18px;
+/* Input */
+.login-input {
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #0f172a; /* Màu nền input */
+  color: #cbd5e1; /* Màu chữ */
+  outline: none;
+  border: 1px solid #334155;
+  transition: border 0.3s ease;
 }
 
+.login-input:focus {
+  border: 1px solid #38bdf8; /* Khi focus */
+}
 
+/* Nút đăng nhập */
+.login-button {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #38bdf8; /* Màu xanh */
+  color: #fff; /* Màu chữ */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.login-button:hover {
+  background-color: #0284c7; /* Xanh đậm hơn khi hover */
+}
+
+/* Thông báo lỗi */
+.login-error {
+  color: #f87171; /* Đỏ nhạt */
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}

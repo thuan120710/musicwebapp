@@ -39,8 +39,15 @@ const MenuList = [
   {
     id: 6,
     icon: <BsJournalAlbum />,
-    name: "Nav",
-    path: "/playlist",
+    name: "Playlist",
+    path: "/playlists",
+  },
+
+  {
+    id: 7,
+    icon: <BsJournalAlbum />,
+    name: "Admin",
+    path: "/admin",
   },
 ];
 

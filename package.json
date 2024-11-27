@@ -7,6 +7,11 @@
     "client": "cd front && npm start"
   },
   "dependencies": {
-    "concurrently": "^6.0.0"
+    "concurrently": "^6.0.0",
+    "framer-motion": "^11.11.10",
+    "jwt-decode": "^4.0.0",
+    "react-helmet": "^6.1.0",
+    "react-share": "^5.1.0",
+    "styled-components": "^6.1.13"
   }
 }

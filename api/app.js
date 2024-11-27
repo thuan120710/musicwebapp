@@ -10,10 +10,15 @@ const Song = require("./models/Song");
 const Category = require("./models/Category");
 const cookieParser = require("cookie-parser");
 const adminRouter = require("./routes/auth");
+
 const categoryRouter = require("./routes/category");
 const songRouter = require("./routes/song");
 const favoriteRouter = require("./routes/favorite");
+const playListRouter = require("./routes/PlaylistRoutes");
 const multer = require("multer");
+const adminRoutes = require("./routes/adminRoutes"); // Đường dẫn tới file router của bạn
+const listeningHistoryRoute = require("./routes/listeningHistory");
+const { PlayList } = require("../front/src/Components/PlayList");
 // const songRouter = require("./routes/song");
 
 // Load environment variables
@@ -86,6 +91,8 @@ const suggestedSongs = [
 app.get("/api/suggested-songs", (req, res) => {
   res.json(suggestedSongs); // Trả về dữ liệu gợi ý nhạc
 });
+console.log("MongoDB URL:", process.env.MONGO_URL);
+console.log("JWT Secret:", process.env.JWT_SECRET);
 
 // // Khởi động server
 // app.listen(port, () => {
@@ -97,6 +104,10 @@ app.use("/api", adminRouter);
 app.use("/api", songRouter);
 app.use("/api", categoryRouter);
 app.use("/api", favoriteRouter);
+app.use("/api", playListRouter);
+app.use("/api", adminRoutes);
+// app.use("/api/admin", adminRoutes); // Cấu hình để các route bắt đầu với /api/admin
+// app.use("/api", listeningHistoryRoute);
 // // Sử dụng route songRouter cho các đường dẫn bắt đầu bằng '/api'
 // app.use("/api", songRouter);
 // Start server

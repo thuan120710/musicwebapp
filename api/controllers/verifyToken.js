@@ -1,17 +1,18 @@
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-  const token = req.header("auth-token");
-  if (!token) {
-    return res.json({ errorMsg: "Access Denied" });
-  } else {
-    try {
-      const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-      req.user = verified;
+// module.exports = (req, res, next) => {
+//   const token = req.header("auth-token");
+//   if (!token) {
+//     return res
+//       .status(401)
+//       .json({ message: "Access Denied. No token provided." });
+//   }
 
-      next();
-    } catch (err) {
-      res.json({ errorMsg: "Access Denied , Please Login " });
-    }
-  }
-};
+//   try {
+//     const verified = jwt.verify(token, process.env.JWT_SECRET);
+//     req.user = verified; // Lưu thông tin người dùng vào req
+//     next();
+//   } catch (err) {
+//     res.status(400).json({ message: "Invalid Token" });
+//   }
+// };

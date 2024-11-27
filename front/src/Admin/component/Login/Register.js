@@ -87,7 +87,7 @@ export default function Register() {
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      history.push("/admin");
+      history.push("/login");
     }
   }, [history]);
 
@@ -121,16 +121,15 @@ export default function Register() {
           password,
         });
 
+        console.log("Response from backend:", response.data);
+
         if (response.data.status === false) {
           console.error(response.data.msg);
         }
 
         if (response.data.status === true) {
-          localStorage.setItem(
-            process.env.REACT_APP_LOCALHOST_KEY,
-            JSON.stringify(response.data.user)
-          );
-          history.push("/admin");
+          console.log("Registration successful");
+          history.push("/login"); // Điều hướng đến login
         }
       } catch (error) {
         console.error("An error occurred while registering:", error);
@@ -174,7 +173,7 @@ export default function Register() {
         />
         <button type="submit">Create User</button>
         <span>
-          Already have an account? <Link to="/admin">Login</Link>.
+          Already have an account? <Link to="/login">Login</Link>.
         </span>
       </form>
     </FormContainer>

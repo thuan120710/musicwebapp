@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {  BrowserRouter as Router,Route, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import Dashboard from "./Admin/component/scenes/dashboard";
 import Topbar from "./Admin/component/scenes/global/Topbar";
 import Sidebars from "./Admin/component/scenes/global/Sidebars";
@@ -18,78 +23,84 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./Admin/component/theme";
 import Login from "./Admin/component/Login/Login";
 import Register from "./Admin/component/Login/Register";
-import { Fragment } from 'react';
 import { connect } from "react-redux";
-import { loginUser } from './Admin/actions/AuthAdminAction';
 import { getAdminProfile } from "./Admin/actions/AuthAdminAction";
-
-
-export const handleLogin = (setLoggedIn) => {
-  setLoggedIn(true);
-};
-
-export const handleLogout = (setIsLoggedIn) => {
-  setIsLoggedIn(false);
-};
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function AdminRoutes(props) {
-  useEffect(() => {
-    // Fetch admin profile when the component mounts
-    props.getAdminProfile();
-  }, []);
-  
   const [theme, colorMode] = useMode();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebar, setIsSidebar] = useState(true);
 
-  // Conditionally render login if not authenticated
-  if (!props.authAdmin.token || props.authAdmin.token === undefined) {
-    return <Login /> ; 
+  const history = useHistory(); // Sử dụng useHistory để chuyển hướng sau khi đăng nhập
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null); // Vai trò của người dùng
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (token && user) {
+      setIsLoggedIn(true);
+      setRole(user.role); // Lấy vai trò từ thông tin user
+      props.getAdminProfile(); // Fetch thông tin admin
+    } else {
+      setIsLoggedIn(false);
+      setRole(null);
+    }
+  }, [props]);
+
+  // Nếu chưa đăng nhập, hiển thị form đăng nhập
+  if (!isLoggedIn) {
+    return <Login onLoginSuccess={() => setIsLoggedIn(true)} />; // Chuyển sang trạng thái đã đăng nhập sau khi thành công
   }
 
-  // Once authenticated, render the main application
+  // Nếu người dùng không phải admin, điều hướng tới trang khác
+  if (role !== "admin") {
+    return <Redirect to="/" />; // Hoặc điều hướng tới trang không đủ quyền
+  }
+
+  // Nếu đã đăng nhập và là admin, render giao diện admin
   return (
-    
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+
         <Router>
           <Sidebars isSidebar={isSidebar} />
           <main className="contents">
-            <Topbar setIsSidebar={setIsSidebar} setIsLoggedIn={setIsLoggedIn} />
-          
-              <Switch>
-                <Route path="/admin" component={Dashboard} exact />
-                <Route path="/registration" component={Register} exact />
-                <Route path="/team" component={Team} exact />
-                <Route path="/contacts" component={Contacts} exact />
-                <Route path="/invoices" component={Invoices} exact />
-                <Route path="/form" component={Form} exact />
-                <Route path="/songs_edit/:id" component={SongsEdit} exact /> 
-                <Route path="/bar" component={Bar} exact />
-                <Route path="/pie" component={Pie} exact />
-                <Route path="/line" component={Line} exact />
-                <Route path="/faq" component={FAQ} exact />
-                <Route path="/calendar" component={Calendar} exact />
-                <Route path="/geography" component={Geography} exact /> 
-                {/* Redirect to dashboard if user is not logged in */}
-                <Redirect to="/admin" />
-              </Switch>
-        
+            <Topbar setIsSidebar={setIsSidebar} />
+
+            <Switch>
+              {/* Định nghĩa route cho trang login */}
+              <Route path="/login" component={Login} exact />
+              <Route path="/admin" component={Dashboard} exact />
+              <Route path="/registration" component={Register} exact />
+              <Route path="/team" component={Team} exact />
+              <Route path="/contacts" component={Contacts} exact />
+              <Route path="/invoices" component={Invoices} exact />
+              <Route path="/form" component={Form} exact />
+              <Route path="/songs_edit/:id" component={SongsEdit} exact />
+              <Route path="/bar" component={Bar} exact />
+              <Route path="/pie" component={Pie} exact />
+              <Route path="/line" component={Line} exact />
+              <Route path="/faq" component={FAQ} exact />
+              <Route path="/calendar" component={Calendar} exact />
+              <Route path="/geography" component={Geography} exact />
+
+              {/* Redirect mặc định về dashboard nếu user đã đăng nhập */}
+              <Redirect from="*" to="/admin" />
+            </Switch>
           </main>
-          </Router>
+        </Router>
       </ThemeProvider>
     </ColorModeContext.Provider>
-
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    authAdmin: state.authAdmin
+    authAdmin: state.authAdmin, // Lấy thông tin xác thực từ Redux store
   };
 };
 
 export default connect(mapStateToProps, { getAdminProfile })(AdminRoutes);
-
-

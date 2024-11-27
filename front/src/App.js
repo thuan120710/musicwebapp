@@ -1,50 +1,56 @@
 // App.js
 
 import "./App.css";
-import React, { Profiler } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AdminRoutes from "./AdminRoutes";
 import UserRoutes from "./UserRoutes";
 import Register from "./Admin/component/Login/Register"; // Import the Register component
-
-// import PlaylistSection from "./Components/PlaylistSection"; // Import the PlaylistSection component
 import { Provider } from "react-redux";
 import store from "./store"; // Import your Redux store
 import Library from "./design/Library";
+import Artist from "./Components/Artist";
+import Search from "./Components/Search";
+import PlaylistPage from "./Components/PlaylistPage";
+import PlaylistDetail from "./Components/PlaylistDetail";
 
+import SongList from "./Components/SongList";
+import FavoritesList from "./Components/FavoritesList";
+import Login from "./Admin/component/Login/Login";
 function App() {
   return (
-    <div className="">
+    <Provider store={store}>
+      {" "}
+      {/* Bọc toàn bộ ứng dụng trong Provider */}
       <Router>
-        <Provider store={store}>
-          {/* Wrap your entire application with the Provider */}
+        <div className="App">
           <Switch>
-            <Route exact path="/">
-              <UserRoutes />
-            </Route>
+            {/* Định tuyến trang người dùng */}
+            <Route exact path="/" component={UserRoutes} />
 
-            <Route path="/admin">
-              <AdminRoutes />
-            </Route>
+            {/* Định tuyến cho Admin */}
+            <Route path="/admin" component={AdminRoutes} />
 
-            <Route path="/lybary">
-              <Library />
-            </Route>
+            {/* Định tuyến khác */}
+            <Route path="/artist" component={Artist} />
+            <Route path="/playlists" component={PlaylistPage} />
 
-            <Route path="/registration">
-              <Register />
-            </Route>
+            <Route path="/playlist/:id/add-songs" component={SongList} />
+            <Route path="/playlist/:id" component={PlaylistDetail} />
+            <Route path="/favorites" component={FavoritesList} />
+            <Route path="/search" component={Search} />
+            <Route path="/library" component={Library} />
+            <Route path="/registration" component={Register} />
+            <Route path="/login" component={Login} />
 
-            <Route path="/profile">
-              <Profiler />
+            {/* Định tuyến mặc định nếu không khớp route */}
+            <Route path="*">
+              <div>404 - Page Not Found</div>
             </Route>
-
-            <Route path="/playlists">{/* <PlaylistSection /> */}</Route>
           </Switch>
-        </Provider>
+        </div>
       </Router>
-      <div className="background"></div>
-    </div>
+    </Provider>
   );
 }
 

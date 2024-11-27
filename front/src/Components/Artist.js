@@ -14,7 +14,6 @@ import { fetchSong } from "../Admin/actions/SongAction";
 import { fetchCategories } from "../Admin/actions/CategoryAction";
 import { createFavorites } from "../Admin/actions/AuthAdminAction";
 import axios from "axios";
-import RecentlyPlayedSongs from "../design/RecentlyPlayedSongs";
 
 function Artist(props) {
   // Ref
@@ -34,8 +33,16 @@ function Artist(props) {
   });
 
   useEffect(() => {
-    props.fetchSong();
-    props.fetchCategories();
+    const fetchData = async () => {
+      try {
+        await props.fetchSong();
+        await props.fetchCategories();
+      } catch (error) {
+        console.error("Error fetching data:", error); // Xử lý lỗi
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -238,14 +245,14 @@ function Artist(props) {
           setSongs={setSongs}
           libraryStatus={libraryStatus}
         />
-        {/* Thêm RecentlyPlayedSongs component vào giao diện */}
+        {/* Thêm RecentlyPlayedSongs component vào giao diện
         <RecentlyPlayedSongs
           setCurrentSong={setCurrentSong}
           audioRef={audioRef}
           isPlaying={isPlaying}
           setSongs={setSongs}
           setRecentlyPlayed={setRecentlyPlayed}
-        />
+        /> */}
         <Credit />
         <audio
           onLoadedMetadata={updateTimeHandler}

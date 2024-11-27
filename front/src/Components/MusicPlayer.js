@@ -19,13 +19,23 @@ import {
   deleteFavorites,
 } from "../Admin/actions/FavoritesAction";
 
+// Import các component chia sẻ từ react-share
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
+
 function MusicPlayer({
-  song,
-  imgSrc,
-  auto,
+  song, // URL của bài hát
+  imgSrc, // Đường dẫn ảnh của bài hát
+  auto, // Tự động phát nhạc
   currentSongIndex,
   setCurrentSongIndex,
-  currentSongId,
+  currentSongId, // ID của bài hát hiện tại
   playNextSong,
   playPreviousSong,
 }) {
@@ -39,6 +49,11 @@ function MusicPlayer({
   const audioPlayer = useRef();
   const progressBar = useRef();
   const animationRef = useRef();
+
+  // Đường dẫn URL đầy đủ của bài nhạc để chia sẻ
+  const shareUrl = `http://localhost:4000/${song}`; // URL bài hát hiện tại
+  const title = `Nghe ngay bài hát ${song}!`; // Tiêu đề chia sẻ là tên bài hát
+  const description = `Nghe bài hát ${song} đang được phát.`; // Mô tả chia sẻ
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
@@ -58,7 +73,17 @@ function MusicPlayer({
       cancelAnimationFrame(animationRef.current);
     }
   };
+  // const playNextSong = () => {
+  //   const nextIndex = (currentSongIndex + 1) % songs.length;
+  //   setCurrentSongIndex(nextIndex); // Update current song index
+  //   setCurrentSong(songs[nextIndex]);
+  // };
 
+  // const playPreviousSong = () => {
+  //   const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+  //   setCurrentSongIndex(prevIndex); // Update current song index
+  //   setCurrentSong(songs[prevIndex]);
+  // };
   const whilePlaying = () => {
     if (audioPlayer.current) {
       progressBar.current.value = audioPlayer.current.currentTime;
@@ -72,7 +97,7 @@ function MusicPlayer({
     const returnMin = minutes < 10 ? `0${minutes}` : `${minutes}`;
     const seconds = Math.floor(sec % 60);
     const returnSec = seconds < 10 ? `0${seconds}` : `${seconds}`;
-    return `${returnMin} : ${returnSec}`;
+    return `${returnMin}:${returnSec}`;
   };
 
   const changeProgress = () => {
@@ -94,19 +119,78 @@ function MusicPlayer({
     setVolume(event.target.value);
   };
 
-  const changeSongLove = (id) => {
-    setLove(!isLove);
-    if (favorites.length === 0) {
-      console.log("Favorites is empty");
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/favorites", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const favorites = await response.json();
+        const isFavorite = favorites.some(
+          (fav) => fav.song_id === currentSongId
+        );
+        setLove(isFavorite);
+      } catch (error) {
+        console.error("Failed to fetch favorites:", error);
+      }
+    };
+
+    if (currentSongId) {
+      checkFavoriteStatus();
+    }
+  }, [currentSongId]);
+
+  const changeSongLove = async (songId) => {
+    const userId = localStorage.getItem("user"); // Giả sử user_id được lưu trong localStorage
+
+    if (!userId) {
+      alert("Bạn cần đăng nhập để thêm vào danh sách yêu thích!");
       return;
     }
-    const isFavorite = favorites.some((favorite) => favorite.song_id === id);
-    if (isFavorite) {
-      // deleteFavorites(id); // Directly call the action creator if available in this file
+
+    try {
+      if (!isLove) {
+        // Gửi yêu cầu thêm bài hát vào danh sách yêu thích
+        const response = await fetch("http://localhost:4000/api/favorites", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ song_id: songId, user_id: userId }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add to favorites");
+        }
+
+        alert("Đã thêm vào danh sách yêu thích!");
+        setLove(true); // Cập nhật trạng thái yêu thích
+      } else {
+        // Gửi yêu cầu xóa bài hát khỏi danh sách yêu thích
+        const response = await fetch("http://localhost:4000/api/favorites", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ song_id: songId, user_id: userId }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to remove from favorites");
+        }
+
+        alert("Đã xóa khỏi danh sách yêu thích!");
+        setLove(false); // Cập nhật trạng thái không yêu thích
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Có lỗi xảy ra. Vui lòng thử lại!");
     }
   };
 
-  // Hàm xử lý khi bài hát kết thúc
   const handleSongEnd = async (songId, userId) => {
     try {
       await fetch("http://localhost:4000/api/track-listened", {
@@ -130,7 +214,7 @@ function MusicPlayer({
           src={`http://localhost:4000/${song}`}
           preload="metadata"
           ref={audioPlayer}
-          onEnded={() => handleSongEnd(currentSongId, "userId")} // Gọi API khi bài hát kết thúc
+          onEnded={() => handleSongEnd(currentSongId, "userId")}
         />
 
         <div className="top">
@@ -170,10 +254,10 @@ function MusicPlayer({
 
           <div className="middle">
             <div className="back">
-              <i onClick={() => playPreviousSong(currentSongId)}>
+              <i onClick={() => playPreviousSong()}>
                 <FaStepBackward />
               </i>
-              <i onClick={() => playPreviousSong(currentSongId)}>
+              <i onClick={() => playPreviousSong()}>
                 <FaBackward />
               </i>
             </div>
@@ -190,19 +274,28 @@ function MusicPlayer({
             </div>
 
             <div className="forward">
-              <i onClick={() => playNextSong(currentSongId)}>
+              <i onClick={() => playNextSong()}>
                 <FaForward />
               </i>
-              <i onClick={() => playNextSong(currentSongId)}>
+              <i onClick={() => playNextSong()}>
                 <FaStepForward />
               </i>
             </div>
           </div>
 
           <div className="right">
-            <i>
-              <FaShareAlt />
-            </i>
+            {/* Nút chia sẻ lên các mạng xã hội */}
+            <div className="shareIcons">
+              <FacebookShareButton url={shareUrl} quote={title}>
+                <FacebookIcon size={32} round />
+              </FacebookShareButton>
+              <TwitterShareButton url={shareUrl} title={title}>
+                <TwitterIcon size={32} round />
+              </TwitterShareButton>
+              <WhatsappShareButton url={shareUrl} title={title}>
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
+            </div>
           </div>
         </div>
 

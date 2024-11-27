@@ -1,11 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// Define the schema for the categories table
+// Define the schema for the favorites table
 const FavoritesSchema = new mongoose.Schema({
-    song_id: { type: String, required: true, unique: true }, // Example validation: required and unique
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "AdminUser",
+  },
+  song_id: {
+    type: mongoose.Schema.Types.ObjectId, // Nếu liên kết với bảng bài hát, chuyển về ObjectId
+    required: true,
+    ref: "Song",
+  },
 });
 
-// Create the model for the categories table
-const Favorites = mongoose.model('Favorites', FavoritesSchema);
+// Create the model for the favorites table
+const Favorites = mongoose.model("Favorites", FavoritesSchema);
 
 module.exports = Favorites;

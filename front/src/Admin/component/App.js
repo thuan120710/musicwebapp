@@ -8,25 +8,21 @@ import { connect } from "react-redux";
 import { getAdminProfile } from "../actions/AuthAdminAction";
 import { BrowserRouter, Route } from "react-router-dom";
 import Profile from "./Layout/Profile";
-import userTable from './Layout/CustomerTable'
-import {GetItemAdmin} from '../actions/GetItemAdmin'
-import FoodTable from './Layout/FoodTable'
-import AdminTable from './Layout/AdminTable'
-const App = props => {
+import userTable from "./Layout/CustomerTable";
+import { GetItemAdmin } from "../actions/GetItemAdmin";
+import FoodTable from "./Layout/FoodTable";
+import AdminTable from "./Layout/AdminTable";
+const App = (props) => {
   const getAllItems = async () => {
     await props.getAdminProfile();
     await props.GetItemAdmin();
-  }
-  
+  };
 
   useEffect(() => {
-    getAllItems()
+    getAllItems();
   }, []);
 
-  
-
-  if (!props.authAdmin.token || props.authAdmin.token === undefined ) {
-    
+  if (!props.authAdmin.token || props.authAdmin.token === undefined) {
     return <Login />;
   } else {
     return (
@@ -47,10 +43,7 @@ const App = props => {
     );
   }
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return state;
 };
-export default connect(
-  mapStateToProps,
-  { getAdminProfile ,GetItemAdmin}
-)(App);
+export default connect(mapStateToProps, { getAdminProfile, GetItemAdmin })(App);

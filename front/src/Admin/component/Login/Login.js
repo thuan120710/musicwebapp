@@ -1,79 +1,77 @@
 import React, { useState } from "react";
-import "./Login.css";
-import { Link, useHistory } from "react-router-dom";
-import { LoginUser } from "../../actions/AuthAdminAction";
-import { connect } from "react-redux";
+import { useHistory, Link } from "react-router-dom"; // Import useHistory và Link từ React Router
 import axios from "axios";
+import "./Login.css"; // Import CSS riêng
 
-const Login = (props) => {
-  const history = useHistory();
-  const [username, setUser] = useState("");
+const Login = () => {
+  const history = useHistory(); // Hook dùng để điều hướng
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const User = { username: username, password: password };
-    await props.LoginUser(User);
-    window.location.reload();
+    e.preventDefault(); // Ngăn reload lại trang khi submit form
+
+    try {
+      // Gửi request login tới server
+      const response = await axios.post("http://localhost:4000/api/login", {
+        username,
+        password,
+      });
+
+      if (response.data && response.data.token) {
+        // Lưu token và thông tin user vào localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // Điều hướng dựa trên vai trò (role) của user
+        const userRole = response.data.user.role;
+        if (userRole === "admin") {
+          history.push("/admin"); // Điều hướng tới dashboard admin
+        } else {
+          history.push("/"); // Điều hướng tới trang chính của user
+        }
+      }
+    } catch (error) {
+      // Hiển thị lỗi nếu login thất bại
+      setErrorMessage("Invalid username or password");
+    }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   // const userData = { user, password };
-  //   // await LoginUser(userData);
-  //   // setIsLoggedIn(true);
-  //   // history.push('/dashboard');
-  //   try {
-  //     const {data} = await axios.post('http://localhost:4000/api/login', {username,password});
-  //     setUser(data);
-  //     alert('Login successful');
-  //     // setRedirect(true);
-  //     setIsLoggedIn(true);
-  //     // history.push('/admin');
-  //     window.location.reload();
-  //   } catch (e) {
-  //     alert('Login failed');
-  //   }
-  // };
 
   return (
-    <div className="login">
-      <div className="login-triangle"></div>
-      <h2 className="login-header">Admin Login</h2>
-      <form className="login-container" onSubmit={handleSubmit}>
-        <p>
-          <input
-            type="text"
-            placeholder="User"
-            value={username}
-            onChange={(e) => setUser(e.target.value)}
-          />
-        </p>
-        <p>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </p>
-        <p>
-          <input type="submit" value="Log in" />
-        </p>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h1 className="login-title">Login</h1>
+        <input
+          type="text"
+          placeholder="Username"
+          className="login-input"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="login-input"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit" className="login-button">
+          Login
+        </button>
+
+        {/* Hiển thị lỗi nếu có */}
+        {errorMessage && <p className="login-error">{errorMessage}</p>}
+
+        {/* Link tới trang đăng ký */}
         <span>
-          New User? <Link to="/registration">Register</Link>.
+          Don't have an account? <Link to="/registration">Sign up</Link>.
         </span>
       </form>
     </div>
   );
 };
 
-// const mapDispatchToProps = {
-//   loginUser,
-// };
-
-// export default connect(null, mapDispatchToProps)(Login);
-const mapStateToProps = (state) => {
-  return state;
-};
-export default connect(mapStateToProps, { LoginUser })(Login);
+export default Login;
