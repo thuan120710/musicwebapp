@@ -7,7 +7,7 @@ import Player from "../design/Player";
 import Song from "../design/Song";
 import Library from "../design/Library";
 import Nav from "../design/Nav";
-import Credit from "../design/Credit";
+// import Credit from "../design/Credit";
 import { Songs } from "./Songs";
 import { connect } from "react-redux";
 import { fetchSong } from "../Admin/actions/SongAction";
@@ -253,7 +253,7 @@ function Artist(props) {
           setSongs={setSongs}
           setRecentlyPlayed={setRecentlyPlayed}
         /> */}
-        <Credit />
+        {/* <Credit /> */}
         <audio
           onLoadedMetadata={updateTimeHandler}
           onTimeUpdate={updateTimeHandler}

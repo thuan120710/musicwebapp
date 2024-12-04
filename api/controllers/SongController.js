@@ -458,3 +458,29 @@ exports.getListeningHistory = async (req, res) => {
     res.status(500).json({ error: "Lỗi máy chủ" });
   }
 };
+
+// Controller function to delete a song
+exports.deleteSong = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Kiểm tra tính hợp lệ của songId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "ID bài hát không hợp lệ" });
+    }
+
+    // Tìm và xóa bài hát
+    const deletedSong = await Song.findByIdAndDelete(id);
+
+    if (!deletedSong) {
+      return res.status(404).json({ error: "Bài hát không tìm thấy" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Bài hát đã được xóa thành công", song: deletedSong });
+  } catch (error) {
+    console.error("Lỗi khi xóa bài hát:", error);
+    res.status(500).json({ error: "Lỗi máy chủ khi xóa bài hát" });
+  }
+};

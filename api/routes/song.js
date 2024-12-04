@@ -29,4 +29,10 @@ router.put("/updatesong/:id", songController.updateSongDetails);
 
 router.post("/song/:songId/comment", songController.addComment);
 router.post("/song/:songId/rating", songController.addOrUpdateRating);
+
+// **Route Xóa Bài Hát** (mới thêm vào)
+
+// Route để xóa bài hát
+router.delete("/song/:id", songController.deleteSong);
+
 module.exports = router;

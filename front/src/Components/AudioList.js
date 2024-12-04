@@ -12,6 +12,7 @@ import MusicPlayer from "./MusicPlayer";
 import SuggestedSongs from "../design/SuggestedSongs";
 import axios from "axios";
 import ListeningHistory from "../design/ListeningHistory";
+import MusicRecommendations from "../Components/MusicRecommendations";
 
 const AudioList = ({ item }) => {
   const [songs, setSongs] = useState([]);
@@ -323,11 +324,15 @@ const AudioList = ({ item }) => {
         playNextSong={playNextSong}
         playPreviousSong={playPreviousSong}
       />
+      {/* Hiển thị phần gợi ý bài hát */}
+      {userId && (
+        <MusicRecommendations userId={userId} onSongSelect={setMainSong} />
+      )}
 
-      <SuggestedSongs
+      {/* <SuggestedSongs
         userId={userId}
         onSongSelect={handleSuggestedSongSelect}
-      />
+      /> */}
 
       <ListeningHistory
         userId={userId}

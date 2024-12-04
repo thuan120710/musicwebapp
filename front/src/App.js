@@ -17,6 +17,7 @@ import PlaylistDetail from "./Components/PlaylistDetail";
 import SongList from "./Components/SongList";
 import FavoritesList from "./Components/FavoritesList";
 import Login from "./Admin/component/Login/Login";
+import MusicRecommendations from "./Components/MusicRecommendations";
 function App() {
   return (
     <Provider store={store}>
@@ -40,6 +41,7 @@ function App() {
             <Route path="/favorites" component={FavoritesList} />
             <Route path="/search" component={Search} />
             <Route path="/library" component={Library} />
+            <Route path="/musicrecomment" component={MusicRecommendations} />
             <Route path="/registration" component={Register} />
             <Route path="/login" component={Login} />
 

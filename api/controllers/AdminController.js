@@ -64,7 +64,17 @@ module.exports.register = async (req, res) => {
     if (!username || !email || !password) {
       return res
         .status(400)
-        .json({ message: "Username, Email and Password are required" });
+        .json({
+          status: false,
+          message: "Username, Email and Password are required",
+        });
+    }
+
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Username or email already exists." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -75,10 +85,12 @@ module.exports.register = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: "User registered successfully", user });
+    res
+      .status(201)
+      .json({ status: true, message: "User registered successfully", user });
   } catch (error) {
     console.error("Error in registration:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 

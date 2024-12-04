@@ -3,6 +3,8 @@ import axios from "axios";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 import { registerRoute } from "../../utils/APIRoutes"; // Ensure this is correctly defined
+import { toast, ToastContainer } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 const FormContainer = styled.div`
   height: 100vh;
@@ -98,13 +100,13 @@ export default function Register() {
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
     if (password !== confirmPassword) {
-      console.error("Password and confirm password should be the same.");
+      toast.error("Password and confirm password should be the same.");
       return false;
     } else if (username.length < 3) {
-      console.error("Username should be at least 3 characters long.");
+      toast.error("Username should be at least 3 characters long.");
       return false;
     } else if (password.length < 8) {
-      console.error("Password should be at least 8 characters long.");
+      toast.error("Password should be at least 8 characters long.");
       return false;
     }
     return true;
@@ -112,6 +114,7 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (handleValidation()) {
       const { username, password, email } = values;
       try {
@@ -124,58 +127,77 @@ export default function Register() {
         console.log("Response from backend:", response.data);
 
         if (response.data.status === false) {
-          console.error(response.data.msg);
+          toast.error(response.data.msg); // Hiển thị lỗi nếu backend trả về status false
         }
 
         if (response.data.status === true) {
-          console.log("Registration successful");
-          history.push("/login"); // Điều hướng đến login
+          // Hiển thị thông báo đăng ký thành công
+          toast.success("Đăng ký thành công!");
+
+          // Reset form sau khi đăng ký thành công
+          setValues({
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
+
+          // Điều hướng đến trang login sau khi đăng ký thành công
+          setTimeout(() => {
+            history.push("/login");
+          }, 1500); // Delay một chút trước khi điều hướng đến trang login
         }
       } catch (error) {
         console.error("An error occurred while registering:", error);
+        toast.error("An error occurred while registering.");
       }
     }
   };
 
   return (
-    <FormContainer>
-      <form onSubmit={handleSubmit}>
-        <div className="brand">
-          <h1>snappy</h1>
-        </div>
-        <input
-          type="text"
-          placeholder="Username"
-          name="username"
-          value={values.username}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={values.email}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          name="confirmPassword"
-          value={values.confirmPassword}
-          onChange={handleChange}
-        />
-        <button type="submit">Create User</button>
-        <span>
-          Already have an account? <Link to="/login">Login</Link>.
-        </span>
-      </form>
-    </FormContainer>
+    <>
+      <FormContainer>
+        <form onSubmit={handleSubmit}>
+          <div className="brand">
+            <h1>snappy</h1>
+          </div>
+          <input
+            type="text"
+            placeholder="Username"
+            name="username"
+            value={values.username}
+            onChange={handleChange}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={values.email}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={values.password}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            value={values.confirmPassword}
+            onChange={handleChange}
+          />
+          <button type="submit">Create User</button>
+          <span>
+            Already have an account? <Link to="/login">Login</Link>.
+          </span>
+        </form>
+      </FormContainer>
+
+      {/* ToastContainer để hiển thị các thông báo */}
+      <ToastContainer />
+    </>
   );
 }

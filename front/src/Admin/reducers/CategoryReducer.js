@@ -4,7 +4,11 @@ import {
   FETCH_CATEGORIES_REQUEST,
   FETCH_CATEGORIES_SUCCESS,
   FETCH_CATEGORIES_FAILURE,
-} from '../actions/types';
+  DELETE_CATEGORY_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  UPDATE_CATEGORY_SUCCESS,
+  UPDATE_CATEGORY_FAILURE,
+} from "../actions/types";
 
 const initialState = {
   categories: [],
@@ -33,6 +37,20 @@ const categoryReducer = (state = initialState, action) => {
         categories: [],
         loading: false,
         error: action.payload,
+      };
+    case DELETE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categories: state.categories.filter(
+          (category) => category._id !== action.payload
+        ),
+      };
+    case UPDATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categories: state.categories.map((category) =>
+          category._id === action.payload._id ? action.payload : category
+        ),
       };
     default:
       return state;

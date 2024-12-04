@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Define the schema for the songs table
 const songSchema = new mongoose.Schema({
-  id: { type: String },
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
   favourite: { type: Boolean, default: false },
   category: { type: String },
   type: { type: String },
