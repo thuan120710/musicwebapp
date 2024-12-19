@@ -11,6 +11,11 @@ router.post("/playlist/add-song", playlistController.addSongToPlaylist);
 router.get("/playlists/:playlistId/songs", playlistController.getPlaylistSongs);
 
 // Route để xóa bài hát khỏi playlist
-router.post("/playlist/remove-song", playlistController.removeSongFromPlaylist);
+router.delete(
+  "/playlist/remove-song",
+  playlistController.removeSongFromPlaylist
+);
+// Route xóa playlist
+router.delete("/playlist/:playlistId", playlistController.deletePlaylist);
 
 module.exports = router;

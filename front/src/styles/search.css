@@ -342,7 +342,9 @@ img, video {
 }
 
 .flex {
-    display: flex
+    display: flex;
+    
+    
 }
 
 .inline-flex {
@@ -698,7 +700,9 @@ img, video {
 
 .object-cover {
     -o-object-fit: cover;
-    object-fit: cover
+    object-fit: cover;
+    
+    
 }
 
 .p-1 {

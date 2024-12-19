@@ -1,10 +1,41 @@
+/* Button Like Songs */
+.header__favorite-group {
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+}
+
+.header__favorite-image {
+  width: 48px;
+  height: 48px;
+}
+
+.header__favorite-title {
+  font-size: 1.6rem;
+  color: var(--text-color);
+}
+
+/* RxCare */
+.header__middle-RxCare {
+  background-color: var(--second-color);
+    color: #b3b3b3;
+    font-size: 2rem;
+    border-radius: 50%;
+    margin-right: 8px;
+    cursor: pointer;
+    width: 55px;
+    height: 55px;
+    line-height: 50px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
 .leftMenu {
-
   width: 280px;
-
-  background: rgba(34, 34, 34, 0.6);
+  background-color: #000000;
   backdrop-filter: blur(10px);
-  padding: 25px 20px;
+  padding: 14px 8px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -14,6 +45,7 @@
   justify-content: space-between;
   align-items: center;
   color: #f1f1f1;
+  margin-left: 10px;
 }
 
 .logoContainer .logo {
@@ -71,7 +103,9 @@
 }
 
 .menuContainer {
-  margin: 15px 0;
+  margin: 24px 0px 27px 0px;
+  background-color: var(--black-color);
+  border-radius: 10px;
 }
 
 .menuContainer p {
@@ -83,7 +117,7 @@
 
 .menuContainer ul {
   width: 100%;
-  padding: 0px;
+  padding: 10px 16px;
 }
 
 .menuContainer ul li {
@@ -99,7 +133,8 @@
   color: #848484;
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 500;
 }
 
 .menuContainer ul li a i {
@@ -130,57 +165,62 @@
   transition: width 0.5s;
 }
 
+/* Playlist Container */
 .playListContainer {
-  margin: 15px 0px;
-  cursor: pointer;
+  background-color: var(--black-color);
+  border-radius: 8px;
+  padding-bottom: 15px;
 }
 
-.playListContainer .nameContainer {
+.nameContainer {
   display: flex;
   justify-content: space-between;
+  padding: 20px 30px;
+  font-size: 1.6rem;
+  font-weight: 500;
   align-items: center;
-  color: #848484;
-  margin-bottom: 10px;
 }
 
-.playListContainer .nameContainer p {
-  font-size: 12px;
-  text-transform: uppercase;
+.nameContainer i {
+  color: var(--text-color);
 }
 
-.playListContainer .nameContainer i {
+.nameContainer-title {
+  align-items: center;
   cursor: pointer;
-  color: #f1f1f1;
 }
 
-
-.playListContainer .playListScroll .playLists {
-  display: flex;
-  align-items: center;
-  color: #848484;
-  margin: 10px 0;
+.nameContainer-icon {
+  cursor: pointer;
 }
 
-.playListContainer .playListScroll .playLists:hover {
-  color: #f1f1f1;
-  transition: all 0.3s;
+.playListScroll {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  margin: 8px;
+  padding: 20px;
 }
 
-.playListContainer .playListScroll .playLists .list {
-  font-size: 18px;
+.playListScroll-title {
+  font-size: 1.5rem;
 }
 
-.playListContainer .playListScroll .playLists p {
-  font-size: 16px;
-  margin-left: 15px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: inline;
+.playListScroll-description {
+  font-size: 1.2rem;
+  margin: 10px 0px 20px 0px;
 }
 
-.playListContainer .playListScroll .playLists .trash {
-  font-size: 18px;
-  margin-left: auto;
+.playListScroll-btn {
+  height: 40px;
+  font-weight: 500;
+  border-radius: 25px;
+  border: none;
+  padding: 0px 25px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  background-color: var(--white-color);
+  color: var(--black-color);
+  padding: 11px 16px;
 }
 
 .trackList {

@@ -3,48 +3,60 @@ import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-  padding: 20px;
-  background-color: #121212;
-  color: #e0e0e0;
-  min-height: 100vh;
+  list-style-type: none;
+  padding: 0;
+  border: 2px solid #333; /* Thêm viền */
+  border-radius: 12px; /* Bo góc */
+  max-height: 600px; /* Giới hạn chiều cao */
+  overflow-y: auto; /* Cho phép cuộn chuột khi vượt quá chiều cao */
+  margin-bottom: 20px;
+  width: 100vw;
 `;
 
 const Title = styled.h2`
-  color: #bb86fc;
+  color: #1db954; /* Màu xanh lá làm điểm nhấn */
   text-align: center;
   margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: bold;
 `;
 
 const SearchInput = styled.input`
-  padding: 10px;
-  background: #333333;
-  color: #e0e0e0;
-  border: 1px solid #444;
-  border-radius: 5px;
+  padding: 12px 15px;
+  font-size: 16px;
+  background: #282828;
+  color: #fff;
+  border: 2px solid #444;
+  border-radius: 8px;
   width: 100%;
   margin-bottom: 20px;
-  &::placeholder {
-    color: #aaa;
+
+  &:focus {
+    border-color: #1db954; /* Màu khi focus */
+    outline: none;
   }
 `;
 
 const Tabs = styled.div`
   display: flex;
+  justify-content: center;
   margin-bottom: 20px;
 `;
 
 const Tab = styled.button`
-  background: ${(props) => (props.active ? "#bb86fc" : "#1e1e1e")};
-  color: ${(props) => (props.active ? "#fff" : "#e0e0e0")};
-  padding: 10px 15px;
-  margin-right: 10px;
+  background: ${(props) => (props.active ? "#1db954" : "#333")};
+  color: ${(props) => (props.active ? "#fff" : "#bbb")};
+  font-size: 16px;
+  padding: 10px 20px;
+  margin: 0 5px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.3s, color 0.3s;
 
   &:hover {
-    background: #333333;
+    background: #1db954;
+    color: #fff;
   }
 `;
 
@@ -56,60 +68,65 @@ const SongContainer = styled.ul`
 const SongItem = styled.li`
   display: flex;
   align-items: center;
-  background: #1e1e1e;
+  background: #222;
   padding: 15px;
   margin: 10px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  transition: background 0.2s, transform 0.2s;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #333333;
-    transform: scale(1.02);
+    background: #2a2a2a;
+    border-color: #1db954;
+    transform: translateY(-3px);
   }
 `;
 
 const SongDetails = styled.div`
   margin-left: 15px;
   flex-grow: 1;
-  color: #e0e0e0;
 
   p {
     margin: 0;
-  }
+    color: #ccc;
+    font-size: 16px;
 
-  p:first-child {
-    font-weight: bold;
-  }
-`;
-
-// Định nghĩa BackButton
-const BackButton = styled.button`
-  padding: 10px 15px;
-  background-color: #bb86fc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #9b63dc;
+    &:first-child {
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+    }
   }
 `;
 
 const Button = styled.button`
   padding: 8px 12px;
-  background-color: ${(props) => (props.disabled ? "#555" : "#bb86fc")};
-  color: white;
+  font-size: 14px;
+  background-color: ${(props) => (props.disabled ? "#555" : "#1db954")};
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? "#555" : "#9b63dc")};
+    background-color: ${(props) => (props.disabled ? "#555" : "#159744")};
+  }
+`;
+
+const BackButton = styled.button`
+  padding: 10px 15px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #555;
   }
 `;
 
@@ -124,10 +141,12 @@ function SongList() {
   const [listeningHistory, setListeningHistory] = useState([]);
   const history = useHistory();
 
+  // Fetch bài hát và thể loại
   useEffect(() => {
     const fetchSongs = async () => {
       try {
         const response = await fetch("http://localhost:4000/api/songs");
+        console.log(response);
         const data = await response.json();
         setSongs(data);
         setFilteredSongs(data);
@@ -146,19 +165,33 @@ function SongList() {
     fetchSongs();
   }, []);
 
+  // Fetch lịch sử nghe nhạc của người dùng
   const fetchListeningHistory = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user._id) {
+      console.error("Không tìm thấy userId trong localStorage.");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `http://localhost:4000/api/listening-history/${playlistId}`
+        `http://localhost:4000/api/listening-history/${user._id}`
       );
       const data = await response.json();
-      setListeningHistory(data.listeningHistory);
-      setFilteredSongs(data.listeningHistory); // Hiển thị lịch sử khi chuyển sang tab "History"
+
+      // Kiểm tra xem lịch sử có chứa bài hát hay không
+      if (data.listeningHistory && data.listeningHistory.length > 0) {
+        setListeningHistory(data.listeningHistory); // Cập nhật state
+        setFilteredSongs(data.listeningHistory); // Lọc bài hát từ lịch sử
+      } else {
+        console.log("Lịch sử nghe nhạc trống.");
+      }
     } catch (error) {
       console.error("Lỗi khi lấy lịch sử nghe nhạc:", error);
     }
   };
 
+  // Hàm tìm kiếm bài hát
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -174,6 +207,7 @@ function SongList() {
     setFilteredSongs(filtered);
   };
 
+  // Chuyển tab và lấy danh sách bài hát theo thể loại
   const handleTabClick = (category) => {
     setActiveTab(category);
 
@@ -192,7 +226,14 @@ function SongList() {
     }
   };
 
+  // Thêm bài hát vào playlist
+  // Thêm bài hát vào playlist
   const addToPlaylist = async (songId) => {
+    if (addedSongs.includes(songId)) {
+      alert("Bài hát này đã có trong danh sách playlist rồi.");
+      return; // Dừng lại nếu bài hát đã có
+    }
+
     try {
       const response = await fetch(
         "http://localhost:4000/api/playlist/add-song",
@@ -202,9 +243,10 @@ function SongList() {
           body: JSON.stringify({ playlistId, songId }),
         }
       );
+
       if (response.ok) {
         alert("Đã thêm bài hát vào playlist");
-        setAddedSongs([...addedSongs, songId]);
+        setAddedSongs([...addedSongs, songId]); // Thêm bài hát vào mảng addedSongs
       } else {
         console.error("Lỗi khi thêm bài hát vào playlist");
       }
@@ -231,31 +273,42 @@ function SongList() {
             active={activeTab === category}
             onClick={() => handleTabClick(category)}
           >
-            {category}
+            {category === "all" ? "Tất Cả" : category}
           </Tab>
         ))}
       </Tabs>
 
       <SongContainer>
-        {filteredSongs.map((song) => (
-          <SongItem key={song._id}>
-            <img
-              src={`http://localhost:4000/${song.imgSrc}`}
-              alt={song.songName}
-              style={{ width: "50px", height: "50px", borderRadius: "5px" }}
-            />
-            <SongDetails>
-              <p>{song.songName}</p>
-              <p>{song.artist}</p>
-            </SongDetails>
-            <Button
-              onClick={() => addToPlaylist(song._id)}
-              disabled={addedSongs.includes(song._id)}
-            >
-              {addedSongs.includes(song._id) ? "Đã Thêm" : "Thêm vào Playlist"}
-            </Button>
-          </SongItem>
-        ))}
+        {filteredSongs.length === 0 ? (
+          <p>Không có bài hát nào trong danh sách.</p>
+        ) : (
+          filteredSongs.map((item) => {
+            const song = item.song && item.song._id ? item.song : item;
+
+            // Lấy bài hát từ filteredSongs
+            return (
+              <SongItem key={song._id}>
+                <img
+                  src={`http://localhost:4000/${song.imgSrc}`} // Đảm bảo đường dẫn ảnh đúng
+                  alt={song.songName}
+                  style={{ width: "50px", height: "50px", borderRadius: "5px" }}
+                />
+                <SongDetails>
+                  <p>{song.songName}</p>
+                  <p>{song.artist}</p>
+                </SongDetails>
+                <Button
+                  onClick={() => addToPlaylist(song._id)}
+                  disabled={addedSongs.includes(song._id)}
+                >
+                  {addedSongs.includes(song._id)
+                    ? "Đã Thêm"
+                    : "Thêm vào Playlist"}
+                </Button>
+              </SongItem>
+            );
+          })
+        )}
       </SongContainer>
     </Container>
   );

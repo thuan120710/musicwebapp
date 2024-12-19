@@ -68,7 +68,7 @@ exports.deleteFavorites = async (req, res) => {
 
     const deletedFavorite = await Favorites.findOneAndDelete({
       user_id,
-      _id: id,
+      song_id: id,
     });
 
     if (!deletedFavorite) {

@@ -1,0 +1,160 @@
+.header__brand {
+    padding-top: 30px;
+}
+
+.header__brand-logo {
+    width: 50px;
+    margin: auto;
+    margin-bottom: 16px;
+}
+
+.header__brand-img {
+    width: 100%;
+}
+
+.header__brand-title {
+    width: 310px;
+    margin: auto;
+    color: var(--white-color);
+}
+
+.header__brand-title h1 {
+    text-align: center;
+    margin: 0;
+    font-family: "Protest Strike", sans-serif;
+    font-size: 5rem;
+    line-height: 6rem;
+}
+
+/* Register Form */
+.register__form {
+    margin-top: 75px;
+}
+
+.register__form-btn,
+.register__form-item {
+    width: 325px;
+    margin: auto;
+}
+
+.register__form-input,
+.register__form-submit {
+    width: 100%;
+}
+
+.register__form--fullName {}
+
+.register__form-input {
+    height: 50px;
+    border-radius: 3px;
+    border: 1px solid #999;
+    background-color: transparent;
+    font-weight: 500;
+    color: #dcdbdb;
+}
+
+.register__form-input::placeholder {
+    color: #dcdbdb;
+}
+
+.register__form--email {}
+
+.register__form--password {}
+
+.register__form-input {
+    font-size: 1.4rem;
+}
+
+.register__form-btn {}
+
+.register__form-submit {
+    height: 100%;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    background-color: var(--primary-color);
+}
+
+/* Register Or */
+.register__or {
+    margin: 40px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register__or-line {
+    width: 145px;
+    height: 1px;
+    background-color: var(--white-color);
+}
+
+.register__or-title {
+    margin: 0 16px;
+    font-size: 1.6rem;
+}
+
+/* Register Social Media */
+.register__socialMedia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register__socialMedia-btn {
+    width: 325px;
+    border-radius: 30px;
+    border: 1px solid #dcdbdb;
+    background-color: transparent;
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.register__socialMedia-icon {
+    text-align: left;
+    font-size: 2rem;
+    margin-left: 16px;
+}
+
+.register__socialMedia-text {
+    margin: auto;
+    color: var(--white-color);
+}
+
+.register__socialMedia-icon--facebook {
+    color: rgb(24, 119, 242);
+}
+
+/* Register HR */
+.register__hr {
+    margin: 40px auto;
+    width: 325px;
+}
+
+/* Register Already have an account */
+.register__account {
+    text-align: center;
+    font-size: 1.6rem;
+}
+
+.register__account-text {}
+
+.register__account-link {
+    color: var(--white-color);
+}
+
+/* Footer reCAPTCHA */
+.footer__reCAPTCHA {
+    padding: 30px 0px 0px 0px;
+    font-size: 1.4rem;
+    width: 325px;
+    margin: auto;
+    text-align: center;
+}
+
+.footer__reCAPTCHA-link {
+    color: var(--white-color);
+}

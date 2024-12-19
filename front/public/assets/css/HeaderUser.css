@@ -1,0 +1,95 @@
+/* Header Logo Left */
+.header__logo {
+    line-height: 49px;
+    padding-left: 20px;
+}
+
+.header__logo-img {
+    width: 33%;
+}
+
+.header__logo-img--spotify {
+    width: 100%;
+}
+
+/* Header Logo Middle */
+.header__home {
+    background-color: var(--second-color);
+    color: #b3b3b3;
+    font-size: 2rem;
+    border-radius: 50%;
+    margin-right: 8px;
+    cursor: pointer;
+    width: 55px;
+    height: 55px;
+    text-align: center;
+    line-height: 50px;
+}
+
+.header__search {
+    background-color: var(--second-color);
+    height: 49px;
+    line-height: 49px;
+    color: #b3b3b3;
+    border-radius: 25px;
+    width: 65%;
+    border: 1px solid transparent;
+}
+
+.header__search:hover {
+    border: 1px solid white;
+    transition: 0.3s;
+}
+
+.header__search:hover .header__search-icon--glass {
+    color: white;
+    transition: 0.3s;
+}
+
+.header__search-icon {
+    margin: 3px 10px 0px 14px;
+}
+
+.header__search-icon--glass {
+    font-size: 1.9rem;
+}
+
+.header__search-input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    font-weight: 500;
+    width: 100%;
+}
+
+/* Header Auth Right */
+.header__auth-btn {
+    padding: 8px 20px;
+    font-size: 1.7rem;
+    border-radius: 25px;
+    border: none;
+}
+
+.header__auth-register--btn {
+    margin-right: 8px;
+    background-color: var(--second-color);
+    color: var(--white-color);
+    font-weight: 500;
+}
+
+.header__auth-login--btn {
+    margin-right: 8px;
+    background-color: var(--white-color);
+    color: var(--second-color);
+    font-weight: 500;
+}
+
+.header__auth-logout--btn {
+    margin-right: 8px;
+    background-color: var(--white-color) !important;
+    color: var(--second-color);
+    font-weight: 600;
+    height: 40px;
+}

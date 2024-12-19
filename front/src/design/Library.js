@@ -2,6 +2,7 @@ import React from "react";
 import LibrarySong from "./LibrarySong";
 import styled from "styled-components";
 import { BiSearchAlt } from "react-icons/bi";
+import "../styles/Libary.css";
 const Library = ({
   search,
   songs,
@@ -54,7 +55,7 @@ const Library = ({
 const LibraryContainer = styled.div`
   height: 740px;
   margin-top: 132px;
-  margin-top: 132px;
+  margin-top: 80px;
   position: fixed;
   z-index: 9;
   top: 0;
@@ -85,6 +86,8 @@ const LibraryContainer = styled.div`
     width: 100%;
     z-index: 9;
   }
+  width: 40vw;
+  font-size: 20px;
 `;
 const Button = styled.button`
   background: transparent;
@@ -93,6 +96,7 @@ const Button = styled.button`
   cursor: pointer;
   border: 2px solid rgb(65, 65, 65);
   padding: 0.5rem;
+  margin-right: 3rem;
   transition: all 0.3s ease;
   &:hover {
     background: rgb(65, 65, 65);

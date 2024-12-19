@@ -13,6 +13,37 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  fullName: {
+    type: String,
+    required: false, // Tùy chọn, người dùng có thể thêm nếu muốn
+  },
+  avatarImage: {
+    type: String, // Đường dẫn hoặc URL ảnh đại diện
+    default: "", // Mặc định là chuỗi rỗng nếu chưa có ảnh
+  },
+  bio: {
+    type: String,
+    required: false, // Mô tả ngắn về người dùng
+    default: "",
+  },
+  address: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  phoneNumber: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  dateOfBirth: {
+    type: Date,
+    required: false,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 
   // avatarImage: {
   //   type: String,
@@ -35,6 +66,10 @@ const UserSchema = new mongoose.Schema({
     type: Map,
     of: Number, // Định dạng cho đếm thể loại
   },
+});
+UserSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 module.exports = mongoose.model("AdminUser", UserSchema, "adminuser");

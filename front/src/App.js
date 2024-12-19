@@ -18,6 +18,8 @@ import SongList from "./Components/SongList";
 import FavoritesList from "./Components/FavoritesList";
 import Login from "./Admin/component/Login/Login";
 import MusicRecommendations from "./Components/MusicRecommendations";
+import ListeningHistory from "./design/ListeningHistory";
+import UserProfile from "./Components/UserProfile";
 function App() {
   return (
     <Provider store={store}>
@@ -37,6 +39,7 @@ function App() {
             <Route path="/playlists" component={PlaylistPage} />
 
             <Route path="/playlist/:id/add-songs" component={SongList} />
+            <Route path="/listening-history" component={ListeningHistory} />
             <Route path="/playlist/:id" component={PlaylistDetail} />
             <Route path="/favorites" component={FavoritesList} />
             <Route path="/search" component={Search} />
@@ -44,6 +47,7 @@ function App() {
             <Route path="/musicrecomment" component={MusicRecommendations} />
             <Route path="/registration" component={Register} />
             <Route path="/login" component={Login} />
+            <Route path="/user-profile" component={UserProfile} />
 
             {/* Định tuyến mặc định nếu không khớp route */}
             <Route path="*">

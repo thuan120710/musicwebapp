@@ -42,33 +42,67 @@ const MusicRecommendations = ({ songId }) => {
   };
 
   return (
-    <div className="music-recommendations">
-      <h3>Gợi Ý Nhạc</h3>
-      {loading ? (
-        <p>Đang tải...</p>
-      ) : recommendedSongs.length > 0 ? (
-        <ul className="song-list">
-          {recommendedSongs.map((song) => (
-            <li
-              key={song._id}
-              className="song-item"
+    <div className="music-recommendations container-fluid mt-3 rounded">
+      {/* Tiêu đề */}
+      <div className="recommended__heading pt-4 pb-2 ps-4">
+        <h2 className="recommended__heading-title text-white ps-3">
+          Gợi Ý Nhạc
+        </h2>
+      </div>
+
+      {/* Mô tả */}
+      <div className="recommended__description ps-4">
+        <p className="ps-3">Dựa trên những gì có trong danh sách phát này</p>
+      </div>
+
+      {/* Nút Làm Mới */}
+      {/* <div className="recommended__reload-page d-flex justify-content-center align-items-center mt-3 mb-4 ps-4">
+        <h4 className="recommended__reload-page--title mb-0">
+          {loading ? "Đang tải..." : "Làm mới danh sách"}
+        </h4>
+        <i className="recommended__reload-page--icon fa-solid fa-rotate-right mt-1 ms-2"></i>
+      </div> */}
+
+      {/* Kiểm tra danh sách nhạc */}
+      <div className="recommended__list-music px-4">
+        {loading ? (
+          <p className="text-white">Đang tải...</p>
+        ) : Array.isArray(recommendedSongs) && recommendedSongs.length > 0 ? (
+          recommendedSongs.map((song, index) => (
+            <div
+              key={index}
+              className="recommended__item d-flex mb-4"
               onClick={() => handleSongClick(song)}
             >
-              <div className="song-card">
+              {/* Hình ảnh bài hát */}
+              <div className="recommended__item-image">
                 <img
-                  src={song.imgSrc}
-                  alt={song.songName}
-                  className="song-img"
+                  className="w-100 h-100 rounded-circle"
+                  src={
+                    song.imgSrc
+                      ? `http://localhost:4000/${song.imgSrc}`
+                      : "/path_to_default_image/default_image.jpg"
+                  }
+                  alt={song.songName || "Unknown Song"}
                 />
-                <h4>{song.songName}</h4>
-                <p>{song.artist}</p>
               </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Không có gợi ý nhạc</p>
-      )}
+              {/* Nội dung bài hát */}
+              <div
+                className="recommended__item-content d-flex justify-content-between align-items-center ms-4"
+                style={{ width: "50%" }}
+              >
+                <h3 className="text-white fw-bold">{song.songName}</h3>
+                <div className="recommended__item-content--artist d-flex align-items-center">
+                  <i className="recommended__item-icon fa-solid fa-music" />
+                  <p className="mb-0 ms-2">{song.artist || "Unknown Artist"}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-white">Không có gợi ý nhạc</p>
+        )}
+      </div>
 
       {/* Hiển thị MusicPlayer nếu đã chọn bài hát */}
       {selectedSong && (

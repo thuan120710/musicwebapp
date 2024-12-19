@@ -11,11 +11,7 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -45,80 +41,96 @@ const Sidebars = () => {
     <Box
       sx={{
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
+          background: `var(--black-color) !important`,
+          margin: `0px 10px`
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
+          display: "flex !important",
+          width: "35px !important",
+          justifyContent: "center !important",
+          marginRight: "0px !important",
         },
         "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
+          padding: "5px 0px 5px 14px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: "var(--black-color) !important",
+          backgroundColor: "var(--primary-color) !important"
+        },
+        "& .pro-inner-item:hover .pro-item-content p": {
+          color: "var(--black-color) !important"
+        },
+        "& .pro-menu-item": {
+          margin: "15px 0px",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: "var(--black-color) !important",
+          backgroundColor: "var(--primary-color) !important"
         },
+        "& .pro-inner-item.active .pro-item-content p": {
+          color: "var(--black-color) !important"
+        },
+        "& .pro-icon svg": {
+          width: "3rem",
+          height: "3rem"
+        },
+        "& .pro-item-content p": {
+          fontSize: "1.6rem",
+          marginLeft: "12px",
+          marginTop: "3px",
+          textAlign: "start",
+          fontWeight: "600"
+        },
+        backgroundColor: "black !important"
       }}
     >
-      <ProSidebar collapsed={isCollapsed}>
+      <ProSidebar collapsed={isCollapsed}
+        sx={{
+          backgroundColor: "black !important"
+        }}
+      >
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
+          <MenuItem onClick={() => setIsCollapsed(!isCollapsed)} icon={isCollapsed ? <MenuOutlinedIcon /> : undefined} style={{ margin: "10px 0px 20px 0", color: colors.grey[100] }}>
             {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINIS
-                </Typography>
+              <Box display="flex" justifyContent="start" alignItems="center" ml="15px">
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
+                  <i className="fa-solid fa-arrow-left fs-3 custom-arrow-icon me-4"></i>
+                  <span className="fs-3 fw-bold">Thu gọn</span>
                 </IconButton>
               </Box>
             )}
           </MenuItem>
-
+          
+          {/* Profile = avatar + name + role */}
           {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/user.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+            <Box mb="50px" sx={{
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              {/* Image Avatar */}
+              <Box sx={{ borderRadius: "50%", width: "100px", height: "100px", border: "2px solid var(--primary-color)" }}>
+                <img alt="profile-user" width="100%" height="100%" src={`../../assets/user.png`} />
               </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Ed Roh
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
-                </Typography>
+
+              <Box sx={{ marginTop: "15px" }}>
+                {/* Name */}
+                <Typography variant="h3" sx={{ color: "var(--primary-color)", fontWeight: "bold", textShadow: "2px 4px 3px rgba(0,0,0,0.3);" }}>Lê Duy Thuận</Typography>
+
+                {/* Role */}
+                <Typography variant="h5" sx={{ color: "var(--white-color)", paddingTop: "5px", fontWeight: "600" }}>Admin</Typography>
+
               </Box>
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box>
             <Item
-              title="Dashboard"
+              title="Bảng điều khiển"
               to="/dashboard"
               icon={<HomeOutlinedIcon />}
               selected={selected}
@@ -133,25 +145,27 @@ const Sidebars = () => {
               Data
             </Typography>
             <Item
-              title="Manage Category"
+              title="Quản lý danh mục"
               to="/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Edit Category"
+              title="Chỉnh sửa danh mục"
               to="/contacts"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+
             />
             <Item
-              title="Edit Songs"
+              title="Chỉnh sửa bài hát"
               to="/invoices"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+
             />
 
             <Typography
@@ -162,62 +176,27 @@ const Sidebars = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
+              title="Tạo bài hát"
               to="/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
+
             />
             <Item
-              title="Calendar"
+              title="Lịch"
               to="/calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="FAQ Page"
+              title="Hỏi và đáp"
               to="/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Charts
-            </Typography>
-            <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            />           
           </Box>
         </Menu>
       </ProSidebar>

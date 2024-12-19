@@ -1,0 +1,189 @@
+/* Header */
+.header-navigation-actions {
+    height: 100px;
+    font-size: 1.6rem;
+    align-items: center;
+    background-color: var(--black-color);
+}
+
+.button-icon {
+    margin-left: 20px;
+}
+
+.button-icon--goHome,
+.button-user--profile {
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.button-icon--goHome {
+    background-color: var(--primary-color);
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px !important;
+    color: var(--white-color);
+}
+
+.button-user {
+    margin-right: 38px;
+}
+
+.button-user--profile {
+    background-color: var(--primary-color);
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px !important;
+    color: var(--white-color);
+}
+
+/* Left Menu */
+
+.LeftMenuPlaylist {
+    width: 360px;
+    min-height: 100vh;
+    background-color: var(--black-color);
+    padding: 0px 8px;
+}
+
+.LeftMenuPlaylist__block {
+    background-color: var(--second-color);
+    border-radius: 8px;
+}
+
+.LeftMenuPlaylist__create {
+    font-size: 1.7rem;
+    color: var(--text-color);
+    padding: 20px 10px;
+}
+
+.LeftMenuPlaylist__create-title {
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.LeftMenuPlaylist__create-title:hover {
+    color: var(--white-color);
+}
+
+.LeftMenuPlaylist__create-title--icon {
+    margin: 0px 8px;
+}
+
+.LeftMenuPlaylist__create-plus .LeftMenuPlaylist__create-title--icon {
+    cursor: pointer;
+    background-color: transparent;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 50%;
+    transition: 0.3s ease;
+}
+
+.LeftMenuPlaylist__create-plus .LeftMenuPlaylist__create-title--icon:hover {
+    background-color: #2c2c2c;
+    color: var(--white-color);
+}
+
+.LeftMenuPlaylist__parent {
+    border-radius: 8px;
+    padding: 10px;
+    transition: 0.3s ease;
+    background-color: transparent;
+}
+
+.LeftMenuPlaylist__parent:hover {
+    background-color: #2c2c2c;
+}
+
+.LeftMenuPlaylist__parent-image {
+    width: 48px;
+    height: 48px;
+}
+
+.LeftMenuPlaylist__parent-image i {
+    font-size: 2rem;
+    width: 100%;
+    height: 100%;
+    background-color: #272727;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 48px;
+}
+
+.LeftMenuPlaylist__parent-image img {
+    border-radius: 5px;
+}
+
+.LeftMenuPlaylist__parent-content .LeftMenuPlaylist__parent-title {
+    font-weight: 400;
+    font-size: 1.6rem;
+}
+
+.LeftMenuPlaylist__parent-content .LeftMenuPlaylist__parent-description {
+    font-size: 1.3rem;
+}
+
+.modal-dialog {
+    top: 25%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.modal-content {
+    width: 330px !important;
+    background-color: var(--primary-color) !important;
+    color: var(--black-color) !important;
+}
+
+.modal-close {
+    position: absolute;
+    right: 15px;
+    font-size: 2.3rem;
+    cursor: pointer;
+    top: 10px;
+}
+
+.modal-title {
+    margin-top: 10px;
+    font-size: 1.9rem !important;
+    font-weight: 600;
+}
+
+.modal__body {
+    margin: 10px 0px;
+}
+
+.modal__body input {
+    min-width: 90%;
+    border-radius: 25px;
+    height: 40px;
+    background-color: black;
+    padding: 0px 12px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #dcdcdc !important;
+    border: none !important;
+    box-shadow: none;
+    border-color: black !important;
+    outline: none;
+}
+
+.modal-footer {
+    border: none !important;
+    margin-top: 20px;
+}
+
+.modal-footer button {
+    width: 45%;
+    border-radius: 20px;
+    height: 35px;
+    background: black;
+    color: white;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}

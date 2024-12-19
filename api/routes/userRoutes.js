@@ -1,18 +1,15 @@
-// const express = require("express");
-// const router = express.Router();
-// const userController = require("../controllers/userController");
+// Trong routes/users.js
+const express = require("express");
+const router = express.Router();
+const {
+  addUser,
+  deleteUser,
+  updateUser,
+} = require("../controllers/AdminController");
+const { verifyAdmin } = require("../Middleware/verifyAdmin");
 
-// // Route đăng ký
-// router.post("/register", userController.register);
+router.post("/add", verifyAdmin, addUser); // Chỉ admin mới có thể thêm người dùng
+router.delete("/:id", verifyAdmin, deleteUser); // Chỉ admin mới có thể xóa người dùng
+router.put("/:id", verifyAdmin, updateUser); // Chỉ admin mới có thể chỉnh sửa người dùng
 
-// // Route đăng nhập
-// router.post("/login", userController.login);
-
-// // Route cập nhật thông tin người dùng
-// router.put("/profile/:id", userController.updateProfile);
-
-// // Route lấy thông tin người dùng
-// router.get("/profile/:id", userController.getUserProfile);
-
-// module.exports = router;
-// a;
+module.exports = router;

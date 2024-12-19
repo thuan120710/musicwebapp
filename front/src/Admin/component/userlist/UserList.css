@@ -1,0 +1,58 @@
+/* CSS cho UserList */
+.user-list {
+  background-color: #2c2f38; /* Nền tối */
+  color: white; /* Chữ sáng */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-list h2 {
+  color: #fff; /* Tiêu đề sáng */
+}
+
+.user-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-list th,
+.user-list td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.user-list th {
+  background-color: #444;
+}
+
+.user-list td button {
+  background-color: #4CAF50; /* Màu nút sáng */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.user-list td button:hover {
+  background-color: #45a049;
+}
+/* CSS cho thanh tìm kiếm */
+.search-bar {
+  margin: 10px 0;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: #4CAF50;
+}

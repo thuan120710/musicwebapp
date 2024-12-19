@@ -52,6 +52,7 @@ exports.getPlaylistSongs = async (req, res) => {
 };
 
 // Xóa bài hát khỏi playlist
+// Xóa bài hát khỏi playlist
 exports.removeSongFromPlaylist = async (req, res) => {
   const { playlistId, songId } = req.body;
 
@@ -66,9 +67,28 @@ exports.removeSongFromPlaylist = async (req, res) => {
       (song) => song.toString() !== songId
     );
     await playlist.save();
-    res.status(200).json(playlist);
+    res
+      .status(200)
+      .json({ message: "Bài hát đã được xóa khỏi playlist", playlist });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi xóa bài hát khỏi playlist" });
+    res.status(500).json({
+      message: "Lỗi khi xóa bài hát khỏi playlist",
+      error: error.message,
+    });
+  }
+};
+
+// Xóa playlist
+exports.deletePlaylist = async (req, res) => {
+  const { playlistId } = req.params;
+  try {
+    const playlist = await Playlist.findByIdAndDelete(playlistId);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist không tồn tại" });
+    }
+    res.status(200).json({ message: "Playlist đã được xóa thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi xóa playlist" });
   }
 };
 

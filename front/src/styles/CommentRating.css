@@ -1,69 +1,104 @@
-Định dạng cho phần đánh giá ngôi sao
+/* Định dạng cho phần đánh giá ngôi sao  */
 .rating-section {
-    margin: 20px 0;
-    text-align: center;
-  }
-  
-  .stars {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-  
-  .star {
-    font-size: 24px;
-    color: #ccc;
-    transition: color 0.2s;
-  }
-  
-  .star.selected {
-    color: #ffc107;
-  }
-  
-  /* Định dạng cho phần bình luận */
-  .comments-section {
-    margin-top: 20px;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-  }
-  
-  .comments-section h3 {
-    margin-bottom: 10px;
-  }
-  
-  .comment {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .comment p {
-    margin: 0;
-    font-size: 14px;
-    color: black;
-  }
-  
-  .comments-section input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  } 
-   
-  .comments-section button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .comments-section button:hover {
-    background-color: #0056b3;
-  }
-   
+  background: var(--black-color);
+  border-radius: 5px;
+  font-size: 2.2rem;
+  color: var(--white-color);
+  font-weight: 500;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.star {
+  color: #ccc;
+  transition: color 0.2s;
+  margin-top: 5px;
+  font-size: 1.6rem;
+}
+
+.star.comment_star-icon {
+  font-size: 10px !important;
+}
+
+.star.selected {
+  color: #ffc107;
+}
+
+.star-icon {
+  font-size: 3rem;
+}
+
+/* Định dạng cho phần bình luận */
+.comments-section {
+  margin-top: 20px;
+  border-top: 1px solid #dddddd4d;
+  padding-top: 10px;
+}
+
+.comment {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #dddddd4d;
+}
+
+.comment__icon {
+  font-size: 2rem;
+  color: var(--black-color);
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 50%;
+}
+
+.comment__name {
+  color: var(--black-color);
+  font-size: 1.6rem;
+}
+
+.comment__listened {
+  font-size: 1.3rem;
+}
+
+.comment__listened,
+.comment__listened-text {
+  color: var(--primary-color);
+}
+
+.comment__description {
+  color: var(--black-color);
+}
+
+.comments-section input[type="text"] {
+  width: 100%;
+  padding: 5px 20px;
+  margin-top: 10px;
+  border: 1px solid var(--primary-color);
+  border-radius: 25px;
+  height: 55px;
+  font-size: 1.4rem;
+  outline: none;
+}
+
+.comments-section button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: var(--black-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.comments-section button:hover {
+  background-color: var(--black-color);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}

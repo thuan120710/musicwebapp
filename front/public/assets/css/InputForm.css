@@ -1,0 +1,66 @@
+.form__input {
+    border: 1px solid var(--primary-color);
+    box-shadow: rgb(0 255 51 / 25%) 0px 54px 55px, rgb(0 255 51 / 25%) 0px -12px 30px, rgb(0 255 51 / 25%) 0px 4px 6px, rgb(0 255 51 / 25%) 0px 12px 13px, rgb(0 255 51 / 25%) 0px -3px 5px;
+    min-height: 375px;
+}
+
+.form__input-brand {
+    width: 200px !important;
+}
+
+.form__input-heading {
+    font-size: 2rem;
+}
+
+
+.form__input--create input {
+    width: 80%;
+    margin-top: 30px;
+    height: 50px;
+    border-radius: 25px;
+    outline: none;
+    border: 1px solid var(--primary-color);
+    background-color: var(--black-color);
+    color: var(--text-color);
+    padding: 0px 20px;
+    font-size: 1.4rem;
+    box-shadow: none;
+}
+
+.form__input--create input:focus,
+.form__input--create input:active {
+    background-color: var(--black-color);
+    color: var(--text-color);
+    outline: none;
+    box-shadow: none;
+    border: 1px solid var(--primary-color);
+}
+
+.form__input-btn {
+    width: 80%;
+}
+
+.form__input-btn--submit {
+    margin: 30px 0px;
+    height: 50px;
+    border-radius: 25px;
+    outline: none;
+    border: 1px solid var(--black-color) !important;
+    background-color: var(--primary-color) !important;
+    color: var(--black-color) !important;
+    border: 1px solid var(--black-color) !important;
+    padding: 0px 20px;
+    font-size: 1.7rem;
+    box-shadow: none;
+    width: 80%;
+    line-height: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.form__input-btn--submit:hover {
+    border: 1px solid var(--primary-color) !important;
+    background-color: var(--black-color) !important;
+    color: var(--primary-color) !important;
+}

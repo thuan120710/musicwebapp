@@ -1,102 +1,107 @@
-.musicPlayer {
-  width: 100%;
-  padding: 10px;
-  display: flex;
-}
-.bottom{
-  background-color:rgba(34, 34, 34, 0.6);
-}
-.musicPlayer .songImage {
-  width: 120px;
-  min-width: 120px;
-  height: 120px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+/* Cột trái */
+.listen-music__volume-icon i {
+  font-size: 1.6rem;
+  color: var(--white-color);
 }
 
-.musicPlayer .songImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Cột giữa */
+.listen-music__image {
+  width: 400px;
+  height: 250px;
 }
 
-.musicPlayer .songAttributes {
-  width: 100%;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Cột phải */
+.listen-music__action {
+  font-size: 2rem;
 }
 
-.musicPlayer .songAttributes .top,
-.musicPlayer .songAttributes .bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+.listen-music__action-icon {
+  margin-right: 20px;
+  transition: 0.3s ease;
 }
 
-.musicPlayer .songAttributes .top .left,
-.musicPlayer .songAttributes .top .middle,
-.musicPlayer .songAttributes .top .right {
-  color: #595959;
-  font-size: 16px;
+.listen-music__action-icon i {
+  cursor: pointer;
+  color: var(--white-color);
+  margin-right: 8px;
+}
+
+/* Player Controls */
+.play-music__controls {
+  font-size: 2.5rem;
+  margin-right: 10px;
+}
+
+.play-music__controls-icon {
+  transition: 0.3s ease;
   cursor: pointer;
 }
 
-.musicPlayer .songAttributes .top .left,
-.musicPlayer .songAttributes .top .middle {
-  display: flex;
-  align-items: center;
+.play-music__controls-icon--step,
+.play-music__controls-icon--backward {
+  color: var(--text-color);
 }
 
-.musicPlayer .songAttributes .top .left .loved {
-  color: #49e12e !important;
-  filter: drop-shadow(0px 0px 4px #49e12e);
+.play-music__controls-icon--step:hover,
+.play-music__controls-icon--backward:hover {
+  color: var(--white-color);
 }
 
-.musicPlayer .songAttributes .top .left .download {
-  padding-left: 20px;
+.play-music__controls-icon--backward {
+  font-size: 3.5rem;
 }
 
-.musicPlayer .songAttributes .top .middle .back i,
-.musicPlayer .songAttributes .top .middle .forward i {
-  margin: 0px 25px;
+.play-music__controls-icon--playOrPause {
+  margin: 0 25px;
+  background-color: var(--white-color);
+  color: var(--black-color);
+  width: 55px;
+  height: 55px;
+  text-align: center;
+  line-height: 55px;
+  border-radius: 50%;
 }
 
-.musicPlayer .songAttributes .top .middle .back i:nth-child(1),
-.musicPlayer .songAttributes .top .middle .forward i:nth-child(1) {
-  margin-right: 0;
+.play-music__controls-icon--step {
+  font-size: 3.5rem;
 }
 
-.musicPlayer .songAttributes .top .middle .back i:nth-child(2),
-.musicPlayer .songAttributes .top .middle .forward i:nth-child(2) {
-  color: #9a9a9a !important;
+/* Modal Content */
+.modal-content {
+  background-color: var(--primary-color) !important;
 }
 
-.musicPlayer .songAttributes .top .middle .playPause {
-  width: 30px;
-  min-width: 30px;
-  height: 30px;
-  border-radius: 100%;
-  background: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.modal-title {
+  font-size: 1.8rem;
 }
 
-.musicPlayer .songAttributes .top .middle .playPause i {
-  color: #000;
+.modal-header button {
+  font-size: 1.4rem;
+  margin-right: 3px;
 }
 
-.musicPlayer .songAttributes .bottom {
-  margin-top: 20px;
+.modal-body .modal-body__share-icon {
+  width: 140px;
+  text-align: center;
+  font-size: 2.2rem;
+  border-radius: 5px;
+  padding: 1px 0px;
+  color: var(--white-color);
+  background-color: var(--black-color);
+  border: 1px solid var(--primary-color);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  transition: 0.2s ease;
+  cursor: pointer;
 }
 
-.musicPlayer .songAttributes .bottom .progressBar {
-  width: 78%;
+.modal-body .modal-body__share-icon:hover {   
+  color: var(--black-color);
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.musicPlayer .progressBar {
+  width: 100%;
   position: relative;
   height: 5px;
   outline: none;
@@ -106,13 +111,12 @@
 }
 
 /* Chrome & Safari */
-
-.musicPlayer .songAttributes .bottom .progressBar::before {
+.musicPlayer .progressBar::before {
   position: absolute;
   content: "";
   top: 0;
   left: 0;
-  background: #848484;
+  background: var(--primary-color) !important;
   width: var(--played-width);
   height: 100%;
   border-radius: 10px;
@@ -120,9 +124,9 @@
   transition: width 250ms linear;
 }
 
-.musicPlayer .songAttributes .bottom .progressBar::-webkit-slider-thumb {
+.musicPlayer .progressBar::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 15px;
+  width: 3px;
   height: 15px;
   border-radius: 50%;
   border: none;
@@ -135,7 +139,7 @@
 }
 
 /* firefox */
-.musicPlayer .songAttributes .bottom .progressBar::-moz-range-track {
+.musicPlayer .progressBar::-moz-range-track {
   width: 100%;
   height: 5px;
   outline: none;
@@ -144,7 +148,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.musicPlayer .songAttributes .bottom .progressBar::-moz-range-progress {
+.musicPlayer .progressBar::-moz-range-progress {
   background: #848484;
   width: var(--played-width);
   height: 100%;
@@ -153,7 +157,7 @@
   transition: width 250ms linear;
 }
 
-.musicPlayer .songAttributes .bottom .progressBar::-moz-range-thumb {
+.musicPlayer .progressBar::-moz-range-thumb {
   -moz-appearance: none;
   width: 15px;
   height: 15px;
@@ -167,36 +171,21 @@
   transition: all 250ms linear;
 }
 
-.musicPlayer .songAttributes .bottom .currentTime,
-.musicPlayer .songAttributes .bottom .duration {
-  color: #f1f1f1;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.musicPlayer .songAttributes .bottom .currentTime {
-  margin-right: 20px;
-}
-
-.musicPlayer .songAttributes .bottom .duration {
-  margin-left: 20px;
-}
-
 @media screen and (max-width: 550px) {
-  .musicPlayer .songAttributes .bottom .currentTime {
+  .musicPlayer .bottom .currentTime {
     margin-right: 0px;
   }
 
-  .musicPlayer .songAttributes .bottom .duration {
+  .musicPlayer .bottom .duration {
     margin-left: 0px;
   }
 
-  .musicPlayer .songAttributes .top .middle .back i,
-  .musicPlayer .songAttributes .top .middle .forward i {
+  .musicPlayer .top .middle .back i,
+  .musicPlayer .top .middle .forward i {
     margin: 0 5px;
   }
 
-  .musicPlayer .songAttributes .bottom .progressBar {
+  .musicPlayer .bottom .progressBar {
     width: 110px;
   }
 }

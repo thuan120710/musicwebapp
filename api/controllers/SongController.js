@@ -206,7 +206,8 @@ exports.trackListenedSong = async (req, res) => {
     );
 
     if (songIndex !== -1) {
-      // Nếu đã tồn tại, di chuyển bài hát lên đầu danh sách
+      // Nếu đã tồn tại, cập nhật listenedAt và di chuyển bài hát lên đầu danh sách
+      adminuser.listeningHistory[songIndex].listenedAt = new Date();
       const [existingSong] = adminuser.listeningHistory.splice(songIndex, 1);
       adminuser.listeningHistory.unshift(existingSong);
     } else {
@@ -225,7 +226,51 @@ exports.trackListenedSong = async (req, res) => {
       listeningHistory: adminuser.listeningHistory,
     });
   } catch (error) {
+    console.error("Lỗi khi cập nhật lịch sử nghe:", error);
     res.status(500).json({ error: "Lỗi máy chủ" });
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    let { songId, commentId } = req.params;
+
+    songId = songId.trim();
+    commentId = commentId.trim();
+
+    // Kiểm tra tính hợp lệ của ID
+    if (
+      !mongoose.Types.ObjectId.isValid(songId) ||
+      !mongoose.Types.ObjectId.isValid(commentId)
+    ) {
+      return res
+        .status(400)
+        .json({ error: "ID bài hát hoặc bình luận không hợp lệ" });
+    }
+
+    // Tìm và xóa bình luận
+    const comment = await Comment.findOneAndDelete({
+      _id: commentId,
+      song: songId,
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Không tìm thấy bình luận" });
+    }
+
+    // Kiểm tra quyền sở hữu
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "Bạn không có quyền xóa bình luận này" });
+    }
+
+    res.status(200).json({ message: "Bình luận đã được xóa thành công" });
+  } catch (error) {
+    console.error("Lỗi khi xóa bình luận:", error.message);
+    res
+      .status(500)
+      .json({ message: "Lỗi khi xóa bình luận", details: error.message });
   }
 };
 
@@ -366,7 +411,7 @@ exports.addComment = async (req, res) => {
 };
 
 // Hàm để lấy bình luận theo songId
-exports.getCommentsBySongId = async (req, res) => {
+exports.getRatingBySongId = async (req, res) => {
   try {
     const songId = req.params.songId;
 
@@ -375,13 +420,75 @@ exports.getCommentsBySongId = async (req, res) => {
       return res.status(400).json({ error: "ID bài hát không hợp lệ" });
     }
 
-    const comments = await Comment.find({ song: songId }).populate("user");
-    res.status(200).json({ comments });
+    // Lấy tất cả các đánh giá của bài hát
+    const ratings = await Rating.find({ song: songId });
+
+    // Nếu không có đánh giá, trả về thông báo không có đánh giá
+    if (ratings.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Chưa có đánh giá cho bài hát này" });
+    }
+
+    // Tính toán trung bình của các đánh giá (score)
+    const averageRating =
+      ratings.reduce((acc, rating) => acc + rating.score, 0) / ratings.length;
+
+    // Trả về rating trung bình và số lượng đánh giá
+    res
+      .status(200)
+      .json({ rating: averageRating, count: ratings.length, ratings });
   } catch (error) {
-    console.error("Error while fetching comments:", error);
-    res.status(500).json({ error: "Lỗi khi lấy bình luận" });
+    console.error("Error while fetching rating:", error);
+    res.status(500).json({ error: "Lỗi khi lấy đánh giá" });
   }
 };
+
+exports.getCommentsAndRating = async (req, res) => {
+  try {
+    const songId = req.params.songId;
+
+    // Kiểm tra tính hợp lệ của songId
+    if (!mongoose.Types.ObjectId.isValid(songId)) {
+      return res.status(400).json({ error: "ID bài hát không hợp lệ" });
+    }
+
+    const songObjectId = new mongoose.Types.ObjectId(songId);
+
+    // Lấy danh sách bình luận và người dùng liên quan
+    const comments = await Comment.find({ song: songObjectId })
+      .populate("user", "username avatarImage") // Chỉ lấy username và avatarImage từ user
+      .exec();
+
+    // Lấy danh sách đánh giá và tính toán
+    const ratings = await Rating.find({ song: songObjectId });
+    const totalRatings = ratings.length;
+    const averageScore =
+      totalRatings > 0
+        ? ratings.reduce((sum, rating) => sum + rating.score, 0) / totalRatings
+        : 0;
+
+    // Trả về rating của từng đánh giá
+    const detailedRatings = ratings.map((rating) => ({
+      user: rating.user, // ID của người dùng
+      score: rating.score, // Điểm đánh giá
+      createdAt: rating.createdAt, // Ngày đánh giá
+    }));
+
+    res.status(200).json({
+      comments,
+      rating: {
+        averageScore: parseFloat(averageScore.toFixed(2)), // Làm tròn 2 chữ số thập phân
+        totalRatings,
+        detailedRatings, // Danh sách rating chi tiết
+      },
+    });
+  } catch (error) {
+    console.error("Error while fetching comments and ratings:", error);
+    res.status(500).json({ error: "Lỗi khi lấy bình luận và đánh giá" });
+  }
+};
+
 exports.updateComment = async (req, res) => {
   try {
     const { commentId, newContent } = req.body;
@@ -429,6 +536,52 @@ exports.updateRating = async (req, res) => {
     res.status(200).json({ message: "Cập nhật đánh giá thành công", rating });
   } catch (error) {
     res.status(500).json({ error: "Lỗi khi cập nhật đánh giá" });
+  }
+};
+
+exports.updateComment = async (req, res) => {
+  try {
+    console.log("Request user:", req.user); // Kiểm tra giá trị của req.user
+
+    let { songId, commentId } = req.params;
+    const { newContent } = req.body;
+
+    songId = songId.trim();
+    commentId = commentId.trim();
+
+    console.log("Cleaned Params:", { songId, commentId });
+
+    if (!mongoose.Types.ObjectId.isValid(songId)) {
+      console.error("Invalid songId:", songId);
+      return res.status(400).json({ error: "ID bài hát không hợp lệ" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(commentId)) {
+      console.error("Invalid commentId:", commentId);
+      return res.status(400).json({ error: "ID bình luận không hợp lệ" });
+    }
+
+    const comment = await Comment.findOne({ _id: commentId, song: songId });
+    if (!comment) {
+      return res.status(404).json({ error: "Không tìm thấy bình luận" });
+    }
+
+    // Kiểm tra quyền sở hữu
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "Bạn không có quyền chỉnh sửa bình luận này" });
+    }
+
+    comment.history.push({ content: comment.content, updatedAt: new Date() });
+    comment.content = newContent;
+    await comment.save();
+
+    res.status(200).json({ message: "Cập nhật bình luận thành công", comment });
+  } catch (error) {
+    console.error("Error while updating comment:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error updating comment", details: error.message });
   }
 };
 
@@ -482,5 +635,36 @@ exports.deleteSong = async (req, res) => {
   } catch (error) {
     console.error("Lỗi khi xóa bài hát:", error);
     res.status(500).json({ error: "Lỗi máy chủ khi xóa bài hát" });
+  }
+};
+
+exports.deleteHistory = async (req, res) => {
+  try {
+    const { userId, songId } = req.params; // Lấy userId và songId từ params
+
+    // Tìm user và xóa bài hát khỏi listeningHistory
+    const result = await AdminUser.findByIdAndUpdate(
+      userId, // Tìm user theo ID
+      {
+        $pull: {
+          listeningHistory: { song: songId }, // Xóa bài hát có songId khỏi lịch sử nghe
+        },
+      },
+      { new: true } // Trả về document sau khi cập nhật
+    );
+
+    if (!result) {
+      return res.status(404).json({
+        message: "Không tìm thấy người dùng hoặc bài hát trong lịch sử.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Đã xóa bài hát khỏi lịch sử nghe.",
+      updatedUser: result, // Trả về user sau khi cập nhật để kiểm tra
+    });
+  } catch (error) {
+    console.error("Error deleting history:", error);
+    res.status(500).json({ message: "Lỗi server khi xóa lịch sử nghe." });
   }
 };

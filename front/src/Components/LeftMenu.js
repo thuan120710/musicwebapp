@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "../styles/LeftMenu.css";
 import { FaSpotify, FaEllipsisH } from "react-icons/fa";
 import { BiSearchAlt } from "react-icons/bi";
-import { Menu } from "./Menu";
 import { MenuList } from "./MenuList";
 import { MenuPlayList } from "./MenuPlayList";
-import TrackList from "./TrackList";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 
 function LeftMenu() {
@@ -21,32 +19,21 @@ function LeftMenu() {
 
     allLi.forEach((n) => n.addEventListener("click", changeMenuActive));
   }, []);
+
   return (
     <div className="leftMenu">
       <div className="logoContainer">
         <div className="logo">
-          <i>
-            <FaSpotify />
-          </i>
-
-          <h2>Spotify</h2>
+          <img
+            src="./assets/img/logo_navbar.png"
+            alt=""
+            className="header__logo-img--spotify"
+            style={{ width: "60%" }}
+          />
         </div>
-
-        <i>
-          <FaEllipsisH />
-        </i>
       </div>
 
-      <div className="searchBox">
-        <input type="text" placeholder="Search..." />
-        <i>
-          <BiSearchAlt />
-        </i>
-      </div>
-
-      {/* <Menu title={"Menu"} listObject={MenuList} /> */}
       <div className="menuContainer">
-        <p>Menus</p>
         <ul>
           {MenuList.map((li) => (
             <li key={li.id}>

@@ -13,6 +13,7 @@ const generateToken = (user) => {
     userId: user._id,
     username: user.username,
     role: user.role, // Thêm vai trò vào payload
+    avatarImage: user.avatarImage,
   };
   console.log(payload);
   console.log("JWT_SECRET when generating token:", process.env.JWT_SECRET);
@@ -48,6 +49,7 @@ module.exports.login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        avatarImage: user.avatarImage,
       },
       token, // Đảm bảo token được gửi về client
     });
@@ -62,12 +64,10 @@ module.exports.register = async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res
-        .status(400)
-        .json({
-          status: false,
-          message: "Username, Email and Password are required",
-        });
+      return res.status(400).json({
+        status: false,
+        message: "Username, Email and Password are required",
+      });
     }
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -102,26 +102,26 @@ module.exports.logOut = (req, res, next) => {
   }
 };
 
-module.exports.getAdminProfile = async (req, res, next) => {
-  try {
-    const adminProfile = await User.findOne(); // You need to implement this function
+// module.exports.getAdminProfile = async (req, res, next) => {
+//   try {
+//     const adminProfile = await User.findOne(); // You need to implement this function
 
-    // Check if admin profile data is retrieved successfully
-    if (adminProfile) {
-      // Send the admin profile data as JSON response
-      res.json({
-        AdminProfile: adminProfile,
-        successMsg: "Admin profile retrieved successfully",
-      });
-    } else {
-      // If admin profile data retrieval fails, send an error response
-      res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
-    }
-  } catch (error) {
-    console.error("Error retrieving admin profile:", error);
-    res.status(500).json({ errorMsg: "Error retrieving admin profile" }); // Return an error response
-  }
-};
+//     // Check if admin profile data is retrieved successfully
+//     if (adminProfile) {
+//       // Send the admin profile data as JSON response
+//       res.json({
+//         AdminProfile: adminProfile,
+//         successMsg: "Admin profile retrieved successfully",
+//       });
+//     } else {
+//       // If admin profile data retrieval fails, send an error response
+//       res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
+//     }
+//   } catch (error) {
+//     console.error("Error retrieving admin profile:", error);
+//     res.status(500).json({ errorMsg: "Error retrieving admin profile" }); // Return an error response
+//   }
+// };
 
 module.exports.getAllUsers = async (req, res, next) => {
   try {
@@ -134,6 +134,97 @@ module.exports.getAllUsers = async (req, res, next) => {
     return res.json(users);
   } catch (ex) {
     next(ex);
+  }
+};
+
+module.exports.addUser = async (req, res) => {
+  try {
+    const { username, email, password, role } = req.body;
+
+    // Kiểm tra xem tài khoản đã tồn tại chưa
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Tài khoản đã tồn tại" });
+    }
+
+    // Mã hóa mật khẩu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Tạo người dùng mới
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      role: role || "user", // Mặc định role là "user"
+    });
+
+    await newUser.save();
+
+    return res.status(201).json({
+      status: true,
+      message: "Tạo tài khoản thành công",
+      user: newUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: "Lỗi hệ thống" });
+  }
+};
+
+// Trong controllers/userController.js
+module.exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Kiểm tra xem người dùng có tồn tại không
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Người dùng không tồn tại" });
+    }
+
+    // Xóa người dùng
+    await User.findByIdAndDelete(id);
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Xóa tài khoản thành công" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: "Lỗi hệ thống" });
+  }
+};
+
+// Trong controllers/userController.js
+module.exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email, role } = req.body;
+
+    // Kiểm tra xem người dùng có tồn tại không
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Người dùng không tồn tại" });
+    }
+
+    // Cập nhật thông tin người dùng
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.role = role || user.role;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Cập nhật tài khoản thành công", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: "Lỗi hệ thống" });
   }
 };
 

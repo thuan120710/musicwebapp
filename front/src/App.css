@@ -2,9 +2,9 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
- height:950px;
+  height:950px;
   display: flex;
-
+  font-family: "Roboto", serif;
 }
 
 .background {

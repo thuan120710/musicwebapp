@@ -1,0 +1,130 @@
+/* Library Styles */
+.LibraryContainer h1 {
+    height: 740px;
+    margin-top: 132px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 20rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Mềm mại hơn */
+    overflow-y: auto;
+    transition: all 0.5s ease;
+    z-index: 9;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    user-select: none;
+    width: 50vw;
+    font-size: 25px;
+  }
+  
+  /* Scrollbar Styling */
+  .LibraryContainer::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .LibraryContainer::-webkit-scrollbar-thumb {
+    background-color: #ffa500;
+    border-radius: 20px;
+    border: 1px solid #dcdcdc;
+  }
+  
+  .LibraryContainer::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .LibraryContainer {
+      width: 100%;
+      z-index: 10;
+    }
+  }
+  
+  /* Header Styles */
+  .H1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f1f1f1;
+    margin-bottom: 15px;
+  }
+  
+  /* Button Styles */
+  .Button {
+    background: transparent;
+    border: 2px solid #ffa500;
+    color: #ffa500;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    margin: 5px;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .Button:hover {
+    background-color: #ffa500;
+    color: white;
+  }
+  
+  .Button:focus {
+    outline: none;
+  }
+  
+  /* Search Box Styles */
+  .searchBox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    font-size: 25px;
+  }
+  
+  .searchBox input {
+    width: 90%;
+    padding: 5px;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .searchBox i {
+    font-size: 1.5rem;
+    color: #ffa500;
+  }
+  
+  /* Song Container */
+  .SongContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding-right: 10px;
+  }
+  
+  .SongContainer .LibrarySong {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .SongContainer .LibrarySong:hover {
+    background-color: #ffa500;
+    color: white;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  }
+  

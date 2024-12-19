@@ -1,0 +1,55 @@
+/* CSS cho UserForm */
+.form-container {
+  background-color: #2c2f38; /* Nền tối */
+  color: white; /* Chữ sáng */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.form-container h2 {
+  color: #fff; /* Tiêu đề sáng */
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  color: #bbb; /* Màu chữ nhạt */
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  background-color: #444; /* Màu nền input */
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4CAF50; /* Màu khi focus */
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.message.error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}

@@ -16,8 +16,10 @@ async function AuthMiddleware(req, res, next) {
     }
 
     req.user = user; // Gắn thông tin người dùng vào req
+    console.log("Authenticated user:", req.user); // In ra để kiểm tra user
     next();
   } catch (error) {
+    console.error("Authentication error:", error);
     res.status(401).json({ error: "Invalid token" });
   }
 }

@@ -26,6 +26,8 @@ import Register from "./Admin/component/Login/Register";
 import { connect } from "react-redux";
 import { getAdminProfile } from "./Admin/actions/AuthAdminAction";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import UserList from "./Admin/component/userlist/UserList";
+import UserForm from "./Admin/component/userlist/UserForm";
 
 function AdminRoutes(props) {
   const [theme, colorMode] = useMode();
@@ -86,6 +88,9 @@ function AdminRoutes(props) {
               <Route path="/faq" component={FAQ} exact />
               <Route path="/calendar" component={Calendar} exact />
               <Route path="/geography" component={Geography} exact />
+              <Route path="/admin/users" component={UserList} />
+              <Route path="/admin/add-user" component={UserForm} />
+              <Route path="/admin/edit-user/:userId" component={UserForm} />
 
               {/* Redirect mặc định về dashboard nếu user đã đăng nhập */}
               <Redirect from="*" to="/admin" />

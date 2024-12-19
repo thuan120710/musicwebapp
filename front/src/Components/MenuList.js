@@ -7,20 +7,20 @@ const MenuList = [
   {
     id: 1,
     icon: <BsFillHouseFill />,
-    name: "Home",
+    name: "Trang Chủ",
     path: "/",
   },
 
   {
     id: 2,
     icon: <BiSearchAlt />,
-    name: "Search",
+    name: "Tìm Kiếm",
     path: "/search",
   },
   {
     id: 3,
     icon: <FaMicrophoneAlt />,
-    name: "Artist",
+    name: "Tác giả",
     path: "/artist",
   },
   {
@@ -29,25 +29,19 @@ const MenuList = [
     name: "Albums",
     path: "/albums",
   },
-  {
-    id: 5,
-    icon: <BsJournalAlbum />,
-    name: "Library",
-    path: "/library",
-  },
 
   {
-    id: 6,
+    id: 5,
     icon: <BsJournalAlbum />,
     name: "Playlist",
     path: "/playlists",
   },
 
   {
-    id: 7,
+    id: 6,
     icon: <BsJournalAlbum />,
-    name: "Admin",
-    path: "/admin",
+    name: "History",
+    path: "/listening-history",
   },
 ];
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import "../styles/SuggestedSongs.css";
 
 const SuggestedSongs = ({ userId, onSongSelect }) => {
   const [suggestedSongs, setSuggestedSongs] = useState([]); // Trạng thái lưu danh sách bài hát gợi ý
@@ -42,118 +43,74 @@ const SuggestedSongs = ({ userId, onSongSelect }) => {
   };
 
   return (
-    <Container>
-      <Title>Gợi ý nhạc</Title>
-      {/* Nút làm mới bài hát */}
-      <Button onClick={handleRefresh} disabled={loading}>
-        {loading ? "Đang tải..." : "Làm mới danh sách"}
-      </Button>
+    <div className="container-fluid app mt-3 rounded">
+      <div className="row">
+        <div className="row recommended__heading pt-4 pb-2 ps-4">
+          <h2 className="recommended__heading-title text-white ps-3">
+            Gợi ý nhạc
+          </h2>
+        </div>
+        <div className="row recommended__description ps-4">
+          <p className="ps-3">dựa trên những gì có trong danh sách phát này</p>
+        </div>
+      </div>
+      <div className="row mt-3 mb-5 ps-4">
+        <div
+          className="recommended__reload-page d-flex justify-content-center align-items-center"
+          onClick={handleRefresh}
+          disabled={loading}
+        >
+          <h4 className="recommended__reload-page--title mb-0">
+            {loading ? "Đang tải..." : "Làm mới danh sách"}
+          </h4>
+          <i className="recommended__reload-page--icon fa-solid fa-rotate-right mt-1 ms-2" />
+        </div>
+      </div>
 
       {/* Kiểm tra trạng thái loading, lỗi và hiển thị thông báo */}
       {loading && <Message>Đang tải bài hát...</Message>}
       {error && <Message>{error}</Message>}
 
-      {/* Hiển thị danh sách bài hát gợi ý nếu có */}
-      <SongList>
+      <div className="row recommended__list-music px-4">
         {suggestedSongs.length === 0 && !loading && !error ? (
-          <Message>Không có bài hát nào để gợi ý.</Message>
+          <p>Không có bài hát nào để gợi ý.</p>
         ) : (
           suggestedSongs.map((song, index) => (
-            <Song key={index} onClick={() => handleSongSelect(song)}>
-              <SongImage
-                src={
-                  song.imgSrc
-                    ? `http://localhost:4000/${song.imgSrc}`
-                    : "/path_to_default_image/default_image.jpg"
-                }
-                alt={song.songName || "Unknown Song"}
-              />
-              <SongInfo>
-                <SongName>{song.songName || "Unknown Song"}</SongName>
-                <Artist>{song.artist || "Unknown Artist"}</Artist>
-              </SongInfo>
-            </Song>
+            <div
+              className="recommended__item d-flex mb-5"
+              key={index}
+              onClick={() => handleSongSelect(song)}
+            >
+              <div className="recommended__item-image">
+                <img
+                  className="w-100 h-100 rounded-circle"
+                  src={
+                    song.imgSrc
+                      ? `http://localhost:4000/${song.imgSrc}`
+                      : "/path_to_default_image/default_image.jpg"
+                  }
+                  alt={song.songName || "Unknown Song"}
+                />
+              </div>
+              <div
+                className="recommended__item-content ms-4"
+                style={{ width: "50%" }}
+              >
+                <h3 className="text-white fw-bold">
+                  {song.songName || "Unknown Song"}
+                </h3>
+                <div className="recommended__item-content--artist d-flex align-items-center">
+                  <i className="recommended__item-icon fa-solid fa-e" />
+                  <p className="mb-0 ms-2">{song.artist || "Unknown Artist"}</p>
+                </div>
+              </div>
+            </div>
           ))
         )}
-      </SongList>
-    </Container>
+      </div>
+    </div>
   );
 };
-
-// Styled Components để tạo các thành phần giao diện
-const Container = styled.div`
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  margin: 20px auto;
-`;
-
-const Title = styled.h2`
-  text-align: center;
-  color: #ffa500;
-`;
-
-const Button = styled.button`
-  display: block;
-  margin: 10px auto;
-  padding: 8px 16px;
-  background-color: #ffa500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ff7f00;
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-`;
-
-const SongList = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Song = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
-`;
-
-const SongImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 5px;
-  margin-right: 10px;
-`;
-
-const SongInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const SongName = styled.p`
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-`;
-
-const Artist = styled.p`
-  font-size: 14px;
-  color: #666;
-`;
 
 const Message = styled.p`
   text-align: center;

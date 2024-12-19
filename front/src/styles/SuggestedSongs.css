@@ -1,64 +1,93 @@
-.suggested-songs {
-    padding: 20px;
-    background-color: #f8f9fa;
-  }
-  
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .song-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .song-item {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    padding: 15px;
-    text-align: center;
-  }
-  
-  .song-image img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  .song-info {
-    margin-top: 10px;
-  }
-  
-  .song-name {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .artist {
-    font-size: 14px;
-    color: #6c757d;
-  }
-  
-  .song-actions {
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .play-btn, .favorite-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #007bff;
-  }
-  
-  .favorite-btn {
-    color: #dc3545;
-  }
-  
+/* Tổng thể container */
+.app {
+  background-color: #121212; /* Nền đen */
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.recommended__heading-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.recommended__description p {
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+/* Nút làm mới danh sách */
+.recommended__reload-page {
+  background-color: #1db954; /* Màu xanh lá */
+  color: #ffffff;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  transition: background-color 0.3s ease;
+}
+
+.recommended__reload-page:hover {
+  background-color: #1ed760;
+}
+
+.recommended__reload-page--icon {
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+/* Danh sách bài hát */
+.recommended__list-music {
+  margin-top: 10px;
+}
+
+.recommended__item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.recommended__item:hover {
+  background-color: #282828; /* Màu xám đậm khi hover */
+}
+
+.recommended__item-image img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%; /* Avatar hình tròn */
+  object-fit: cover;
+}
+
+.recommended__item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  margin-left: 20px;
+}
+
+.recommended__item-content h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.recommended__item-content--artist {
+  color: #b3b3b3; /* Tên nghệ sĩ màu xám */
+  font-size: 14px;
+}
+
+.recommended__item-icon {
+  color: #b3b3b3;
+  margin-right: 5px;
+}

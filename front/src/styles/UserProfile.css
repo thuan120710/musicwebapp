@@ -1,0 +1,146 @@
+/* Cấu trúc chung của trang người dùng */
+.user-profile {
+    width: 80%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #6a6666f2; /* Nền tối */
+    color: #fff; /* Chữ sáng */
+    border-radius: 15px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
+  }
+  
+  /* Tiêu đề của trang */
+  .user-profile h2 {
+    text-align: center;
+    color: #f4f7fc;
+    margin-bottom: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
+  
+  /* Phần hình ảnh người dùng */
+  .profile-picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .profile-picture img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Hiệu ứng hover cho avatar */
+  .profile-picture img:hover {
+    transform: scale(1.1); /* Tăng kích thước ảnh khi hover */
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+  }
+  
+  .profile-picture input {
+    margin-top: 10px;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+  }
+  
+  /* Thông tin người dùng với kiểu bảng có 2 cột */
+  .profile-info {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Phân chia thành 2 cột: cột trái cho label và cột phải cho giá trị */
+    gap: 15px;
+    margin-bottom: 30px;
+    border-collapse: collapse;
+  }
+  
+  .profile-info label {
+    font-weight: bold;
+    color: #f4f7fc;
+    background-color: #333;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: right;
+    font-size: 1rem;
+  }
+  
+  .profile-info p,
+  .profile-info input,
+  .profile-info textarea {
+    padding: 12px;
+    font-size: 14px;
+    color: #f4f7fc;
+    background-color: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+  .profile-info p:hover{
+    color: #514f4f;
+  }
+  .profile-info input:hover{
+    color: #514f4f;
+  }
+  .profile-info input,
+  .profile-info textarea {
+    width: 100%;
+  }
+  
+  .profile-info input:focus,
+  .profile-info textarea:focus {
+    outline: none;
+    border-color: #007bff; /* Màu sáng khi input được chọn */
+    background-color: #1e1e1e;
+  }
+  
+  /* Nút chỉnh sửa và lưu */
+  .profile-actions {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .profile-actions button {
+    background-color: #253646cc;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Hiệu ứng hover cho các nút */
+  .profile-actions button:hover {
+    background-color: #3e4954;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Nút hủy */
+  .profile-actions .cancel-btn {
+    background-color: #f44336;
+  }
+  
+  .profile-actions .cancel-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Nút chỉnh sửa */
+  .profile-actions .edit-btn {
+    background-color: #4caf50;
+  }
+  
+  .profile-actions .edit-btn:hover {
+    background-color: #388e3c;
+  }
+  

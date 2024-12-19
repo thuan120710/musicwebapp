@@ -1,0 +1,40 @@
+:root {
+    --primary-color: #1ed760;
+    --second-color: #1f1f1f;
+    --white-color: #fff;
+    --black-color: #121212;
+    --text-color: #c7c7c7;
+}
+
+* {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 70.5%;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6rem;
+}
+
+.app {
+    background-color: var(--black-color);
+    color: var(--text-color);
+}
+
+.input-50 {
+    height: 50px;
+}
+
+.fa-google {
+    background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.hover-btn:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import "../styles/Libralysong.css";
 const LibrarySong = ({
   song,
   setCurrentSong,
@@ -61,6 +61,7 @@ const LibrarySongContainer = styled.div`
     background-color: lightblue;
     transition: all 0.3s ease;
   }
+  font-size: 25px;
 `;
 
 const LibrarySongDescription = styled.div`
@@ -70,11 +71,16 @@ const LibrarySongDescription = styled.div`
   flex-direction: column;
   justify-content: center;
   color: black;
+  font-size: 25px;
 `;
 
 const Img = styled.img`
   margin: 20px 0;
-  height: 60px;
+
+  height: 80px;
+  width: 80px;
+  border-radius: 10px;
+  object-fit: cover;
 `;
 
 const H1 = styled.h3`
@@ -84,7 +90,7 @@ const H1 = styled.h3`
 
 const H2 = styled.h4`
   padding-left: 1rem;
-  font-size: 0.7rem;
+  font-size: 2rem;
 `;
 
 export default LibrarySong;

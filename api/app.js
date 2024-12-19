@@ -13,12 +13,14 @@ const adminRouter = require("./routes/auth");
 const deleteRouter = require("./routes/song");
 const categoryRouter = require("./routes/category");
 const songRouter = require("./routes/song");
+const userRoutes = require("./routes/userRoutes");
 const favoriteRouter = require("./routes/favorite");
 const playListRouter = require("./routes/PlaylistRoutes");
 const multer = require("multer");
 const adminRoutes = require("./routes/adminRoutes"); // Đường dẫn tới file router của bạn
 const listeningHistoryRoute = require("./routes/listeningHistory");
 const { PlayList } = require("../front/src/Components/PlayList");
+const path = require("path"); // Đảm bảo bạn đã require module 'path'
 // const songRouter = require("./routes/song");
 
 // Load environment variables
@@ -31,8 +33,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors()); // Allow all origins for testing. Adjust in production.
-app.use("/uploads", express.static(__dirname + "/uploads")); // Serve static files
+// app.use("/uploads", express.static(__dirname + "/uploads")); // Serve static files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 module.exports = app;
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL, {
@@ -43,28 +48,122 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
 
+exports.deleteComment = async (req, res) => {
+  try {
+    let { songId, commentId } = req.params;
+
+    songId = songId.trim();
+    commentId = commentId.trim();
+
+    console.log("Cleaned Params:", { songId, commentId });
+
+    if (!mongoose.Types.ObjectId.isValid(songId)) {
+      console.error("Invalid songId:", songId);
+      return res.status(400).json({ error: "ID bài hát không hợp lệ" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(commentId)) {
+      console.error("Invalid commentId:", commentId);
+      return res.status(400).json({ error: "ID bình luận không hợp lệ" });
+    }
+
+    const comment = await Comment.findOne({ _id: commentId, song: songId });
+    if (!comment) {
+      return res.status(404).json({ error: "Không tìm thấy bình luận" });
+    }
+
+    // Kiểm tra quyền sở hữu
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "Bạn không có quyền xóa bình luận này" });
+    }
+
+    // Xóa bình luận
+    await Comment.deleteOne({ _id: commentId });
+
+    res.status(200).json({ message: "Bình luận đã được xóa thành công" });
+  } catch (error) {
+    console.error("Error while deleting comment:", error.message);
+    res
+      .status(500)
+      .json({ message: "Error deleting comment", details: error.message });
+  }
+};
+
+// app.delete("/api/song/:songId/comment/:commentId", async (req, res) => {
+//   const { songId, commentId } = req.params;
+//   try {
+//     // Giả sử bạn có mô hình Song với các bình luận được lưu trữ
+//     const song = await Song.findById(songId);
+//     if (!song) {
+//       return res.status(404).json({ message: "Song not found" });
+//     }
+
+//     // Tìm và xóa bình luận
+//     song.comments = song.comments.filter(
+//       (comment) => comment._id.toString() !== commentId
+//     );
+//     await song.save();
+
+//     return res.status(200).json({ message: "Comment deleted successfully" });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Error deleting comment" });
+//   }
+// });
+// // API sửa bình luận và đánh giá
+// app.put("/api/song/:songId/comment/:commentId", async (req, res) => {
+//   const { songId, commentId } = req.params;
+//   const { content, score } = req.body; // Nội dung và đánh giá mới
+//   try {
+//     const song = await Song.findById(songId);
+//     if (!song) {
+//       return res.status(404).json({ message: "Song not found" });
+//     }
+
+//     // Tìm bình luận cần sửa
+//     const comment = song.comments.id(commentId);
+//     if (!comment) {
+//       return res.status(404).json({ message: "Comment not found" });
+//     }
+
+//     // Cập nhật nội dung và điểm đánh giá
+//     comment.content = content;
+//     comment.score = score;
+//     await song.save();
+
+//     return res
+//       .status(200)
+//       .json({ message: "Comment updated successfully", comment });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Error updating comment" });
+//   }
+// });
 // Function to generate JWT token
 
-app.get("/api/getAdminProfile", async (req, res) => {
-  try {
-    const adminProfile = await User.findOne(); // You need to implement this function
+// app.get("/api/getAdminProfile", async (req, res) => {
+//   try {
+//     const adminProfile = await User.findOne(); // You need to implement this function
 
-    // Check if admin profile data is retrieved successfully
-    if (adminProfile) {
-      // Send the admin profile data as JSON response
-      res.json({
-        AdminProfile: adminProfile,
-        successMsg: "Admin profile retrieved successfully",
-      });
-    } else {
-      // If admin profile data retrieval fails, send an error response
-      res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
-    }
-  } catch (error) {
-    console.error("Error retrieving admin profile:", error);
-    res.status(500).json({ errorMsg: "Error retrieving admin profile" }); // Return an error response
-  }
-});
+//     // Check if admin profile data is retrieved successfully
+//     if (adminProfile) {
+//       // Send the admin profile data as JSON response
+//       res.json({
+//         AdminProfile: adminProfile,
+//         successMsg: "Admin profile retrieved successfully",
+//       });
+//     } else {
+//       // If admin profile data retrieval fails, send an error response
+//       res.status(500).json({ errorMsg: "Failed to retrieve admin profile" });
+//     }
+//   } catch (error) {
+//     console.error("Error retrieving admin profile:", error);
+//     res.status(500).json({ errorMsg: "Error retrieving admin profile" }); // Return an error response
+//   }
+// });
+
+// Backend (Express.js)
 
 const suggestedSongs = [
   {
@@ -323,6 +422,7 @@ app.use("/api", favoriteRouter);
 app.use("/api", playListRouter);
 app.use("/api", adminRoutes);
 app.use("/api", deleteRouter);
+app.use("/api", userRoutes);
 // app.use("/api/admin", adminRoutes); // Cấu hình để các route bắt đầu với /api/admin
 // app.use("/api", listeningHistoryRoute);
 // // Sử dụng route songRouter cho các đường dẫn bắt đầu bằng '/api'

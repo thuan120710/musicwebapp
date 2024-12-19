@@ -120,9 +120,9 @@ function Search(props) {
             <br />
             <div
               onClick={() => setMainSong(song.song, song.imgSrc)}
-              className="relative group flex flex-col items-center rounded-md overflow-hidden gap-x-4 bg-neutral-400/5 cursor-pointer hover:bg-neutral-400/10 transition p-3"
+              className="relative group flex flex-col items-center rounded-md overflow-hidden gap-x-4 bg-neutral-400/5 cursor-pointer hover:bg-neutral-400/10 transition p-"
             >
-              <div className="flex items-center justify-center gap-x-4">
+              <div className="flex items-center justify-center gap-x-8 ">
                 <img
                   className="object-cover"
                   src={`http://localhost:4000/${song.imgSrc}`}

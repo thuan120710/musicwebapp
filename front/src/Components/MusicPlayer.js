@@ -1,25 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "../styles/MusicPlayer.css";
-import {
-  FaRegHeart,
-  FaHeart,
-  FaForward,
-  FaStepForward,
-  FaStepBackward,
-  FaBackward,
-  FaPlay,
-  FaPause,
-  FaShareAlt,
-} from "react-icons/fa";
-import { BsFillVolumeUpFill, BsMusicNoteList } from "react-icons/bs";
-import { BsDownload } from "react-icons/bs";
 import { connect } from "react-redux";
 import {
   fetchFavorites,
   deleteFavorites,
 } from "../Admin/actions/FavoritesAction";
-
-// Import các component chia sẻ từ react-share
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -30,12 +16,10 @@ import {
 } from "react-share";
 
 function MusicPlayer({
-  song, // URL của bài hát
-  imgSrc, // Đường dẫn ảnh của bài hát
-  auto, // Tự động phát nhạc
-  currentSongIndex,
-  setCurrentSongIndex,
-  currentSongId, // ID của bài hát hiện tại
+  song,
+  imgSrc,
+  auto,
+  currentSongId,
   playNextSong,
   playPreviousSong,
 }) {
@@ -44,7 +28,6 @@ function MusicPlayer({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrenttime] = useState(0);
   const [volume, setVolume] = useState(50);
-  const [favorites, setFavorites] = useState([]);
 
   const audioPlayer = useRef();
   const progressBar = useRef();
@@ -53,7 +36,6 @@ function MusicPlayer({
   // Đường dẫn URL đầy đủ của bài nhạc để chia sẻ
   const shareUrl = `http://localhost:4000/${song}`; // URL bài hát hiện tại
   const title = `Nghe ngay bài hát ${song}!`; // Tiêu đề chia sẻ là tên bài hát
-  const description = `Nghe bài hát ${song} đang được phát.`; // Mô tả chia sẻ
 
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
@@ -73,17 +55,7 @@ function MusicPlayer({
       cancelAnimationFrame(animationRef.current);
     }
   };
-  // const playNextSong = () => {
-  //   const nextIndex = (currentSongIndex + 1) % songs.length;
-  //   setCurrentSongIndex(nextIndex); // Update current song index
-  //   setCurrentSong(songs[nextIndex]);
-  // };
 
-  // const playPreviousSong = () => {
-  //   const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-  //   setCurrentSongIndex(prevIndex); // Update current song index
-  //   setCurrentSong(songs[prevIndex]);
-  // };
   const whilePlaying = () => {
     if (audioPlayer.current) {
       progressBar.current.value = audioPlayer.current.currentTime;
@@ -144,7 +116,7 @@ function MusicPlayer({
   }, [currentSongId]);
 
   const changeSongLove = async (songId) => {
-    const userId = localStorage.getItem("user"); // Giả sử user_id được lưu trong localStorage
+    const userId = localStorage.getItem("user");
 
     if (!userId) {
       alert("Bạn cần đăng nhập để thêm vào danh sách yêu thích!");
@@ -153,7 +125,6 @@ function MusicPlayer({
 
     try {
       if (!isLove) {
-        // Gửi yêu cầu thêm bài hát vào danh sách yêu thích
         const response = await fetch("http://localhost:4000/api/favorites", {
           method: "POST",
           headers: {
@@ -205,114 +176,177 @@ function MusicPlayer({
   };
 
   return (
-    <div className="musicPlayer">
-      <div className="songImage">
-        <img src={`http://localhost:4000/${imgSrc}`} alt={currentSongId} />
-      </div>
-      <div className="songAttributes">
-        <audio
-          src={`http://localhost:4000/${song}`}
-          preload="metadata"
-          ref={audioPlayer}
-          onEnded={() => handleSongEnd(currentSongId, "userId")}
-        />
-
-        <div className="top">
-          <div className="left">
-            <div
-              className="loved"
-              onClick={() => changeSongLove(currentSongId)}
-            >
-              {isLove ? (
-                <i>
-                  <FaRegHeart />
-                </i>
-              ) : (
-                <i>
-                  <FaHeart />
-                </i>
-              )}
-            </div>
-            <a href={song} download="audio.mp3" className="download">
-              <BsDownload />
-            </a>
-            <i>
-              <BsFillVolumeUpFill />
-            </i>
-
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volume}
-              onChange={handleVolumeChange}
+    <div className="container-fluid musicPlayer app">
+      {/* Image Song */}
+      <div className="row py-5">
+        {/* Cột giữa */}
+        <div className="col-md-12 d-flex justify-content-center">
+          <div className="listen-music__image">
+            <img
+              className="w-100 h-100 rounded"
+              src={`http://localhost:4000/${imgSrc}`}
+              alt={currentSongId}
             />
-            <i>
-              <BsMusicNoteList />
-            </i>
           </div>
+        </div>
+      </div>
 
-          <div className="middle">
-            <div className="back">
-              <i onClick={() => playPreviousSong()}>
-                <FaStepBackward />
-              </i>
-              <i onClick={() => playPreviousSong()}>
-                <FaBackward />
-              </i>
-            </div>
-            <div className="playPause" onClick={changePlayPause}>
-              {isPlaying ? (
-                <i>
-                  <FaPause />
-                </i>
-              ) : (
-                <i>
-                  <FaPlay />
-                </i>
-              )}
-            </div>
+      <audio
+        src={`http://localhost:4000/${song}`}
+        preload="metadata"
+        ref={audioPlayer}
+        onEnded={() => handleSongEnd(currentSongId, "userId")}
+      />
 
-            <div className="forward">
-              <i onClick={() => playNextSong()}>
-                <FaForward />
-              </i>
-              <i onClick={() => playNextSong()}>
-                <FaStepForward />
-              </i>
-            </div>
-          </div>
-
-          <div className="right">
-            {/* Nút chia sẻ lên các mạng xã hội */}
-            <div className="shareIcons">
-              <FacebookShareButton url={shareUrl} quote={title}>
-                <FacebookIcon size={32} round />
-              </FacebookShareButton>
-              <TwitterShareButton url={shareUrl} title={title}>
-                <TwitterIcon size={32} round />
-              </TwitterShareButton>
-              <WhatsappShareButton url={shareUrl} title={title}>
-                <WhatsappIcon size={32} round />
-              </WhatsappShareButton>
+      {/* Player Controls */}
+      <div className="row mt-5 mb-4">
+        {/* Cột trái */}
+        <div className="col-md-4 d-flex justify-content-center">
+          <div className="listen-music__volume d-flex align-items-end pb-4">
+            <div className="listen-music__volume-icon d-flex align-items-center">
+              <i className="fa-solid fa-volume-high me-3" />
+              <input
+                type="range"
+                min={0}
+                max={100}
+                defaultValue="{volume}"
+                onchange="{handleVolumeChange}"
+                className=""
+              />
             </div>
           </div>
         </div>
+        {/* Cột giữa */}
+        <div className="col-md-4">
+          <div className="play-music__controls d-flex justify-content-center">
+            <div
+              className="play-music__controls-icon play-music__controls-icon--backward"
+              onClick={() => playPreviousSong()}
+            >
+              <i className="fa-solid fa-backward-step" />
+            </div>
+            <div
+              className="play-music__controls-icon play-music__controls-icon--playOrPause hover-btn"
+              onClick={changePlayPause}
+            >
+              {isPlaying ? (
+                <i class="fa-solid fa-pause hover-btn"></i>
+              ) : (
+                <i className="fa-solid fa-play hover-btn" />
+              )}
+            </div>
+            <div
+              className="play-music__controls-icon play-music__controls-icon--step"
+              onClick={() => playNextSong()}
+            >
+              <i className="fa-solid fa-forward-step" />
+            </div>
+          </div>
+        </div>
+        {/* Cột phải */}
+        <div className="col-md-4 d-flex justify-content-evenly align-items-center pb-4">
+          <div className="listen-music__action d-flex">
+            <div
+              className="listen-music__action-icon listen-music__action-icon--favorite hover-btn"
+              onClick={() => changeSongLove(currentSongId)}
+            >
+              {isLove ? (
+                <i class="fa-regular fa-heart hover-btn"></i>
+              ) : (
+                <i className="fa-solid fa-heart hover-btn" />
+              )}
+            </div>
+            <div
+              className="listen-music__action-icon listen-music__action-icon--download hover-btn"
+              href={song}
+              download="audio.mp3"
+            >
+              <i className="fa-solid fa-download" />
+            </div>
+          </div>
 
-        <div className="bottom">
-          <div className="currentTime">{calculateTime(currentTime)}</div>
-          <input
-            type="range"
-            className="progressBar"
-            ref={progressBar}
-            defaultValue="0"
-            onChange={changeProgress}
-            autoPlay={auto}
-          />
-          <div className="duration">
-            {duration && !isNaN(duration) && calculateTime(duration)
-              ? duration && !isNaN(duration) && calculateTime(duration)
-              : "00:00"}
+          <div className="listen-music__action-icon listen-music__action-icon--share">
+            <i className="hover-btn">
+              <FacebookShareButton url={shareUrl} quote={title}>
+                <FacebookIcon size={32} round />
+              </FacebookShareButton>
+            </i>
+            <i className="hover-btn">
+              <TwitterShareButton url={shareUrl} title={title}>
+                <TwitterIcon size={32} round />
+              </TwitterShareButton>
+            </i>
+            <i className="hover-btn">
+              <WhatsappShareButton url={shareUrl} title={title}>
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
+            </i>
+          </div>
+        </div>
+      </div>
+      {/* Audio Time */}
+      <div className="row mt-5 pb-5">
+        <div className="col-md-6 offset-md-3">
+          <div className="listen-music__timer d-flex justify-content-center align-items-center">
+            <div className="listen-music__timer-icon listen-music__timer-icon--current-time fs-4 me-3">
+              {calculateTime(currentTime)}
+            </div>
+
+            <div className="listen-music__timer-icon listen-music__timer-icon--progress-bar d-flex flex-grow-1">
+              <input
+                type="range"
+                className="progressBar"
+                ref={progressBar}
+                defaultValue="0"
+                onChange={changeProgress}
+                autoPlay={auto}
+              />
+            </div>
+
+            <div className="listen-music__timer-icon listen-music__timer-icon--remaining-time fs-4 ms-3">
+              {duration && !isNaN(duration) && calculateTime(duration)
+                ? duration && !isNaN(duration) && calculateTime(duration)
+                : "--:--"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      <div
+        className="modal fade"
+        id="music"
+        tabIndex={-1}
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content text-dark pb-4 pt-1 ps-2">
+            <div className="modal-header border-0">
+              <h1 className="modal-title" id="exampleModalLabel">
+                Bạn muốn chia sẻ lên
+              </h1>
+              <button
+                type="button"
+                className="btn-close me-2"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body pt-4">
+              <div className="modal-body__share d-flex justify-content-center">
+                <div className="modal-body__share-icon modal-body__share-icon--facebook">
+                  <i>
+                    <FacebookShareButton url={shareUrl} quote={title}>
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                  </i>
+                </div>
+                <div className="modal-body__share-icon modal-body__share-icon--twitter mx-4"></div>
+                <div className="modal-body__share-icon modal-body__share-icon--whatsapp"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

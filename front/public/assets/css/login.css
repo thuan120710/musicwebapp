@@ -1,0 +1,155 @@
+/* Form Title */
+.login__form {
+    background-color: var(--black-color);
+    width: 45%;
+    margin: auto;
+    border-radius: 7px;
+}
+
+.login__form-title {
+    padding: 30px 0px;
+}
+
+.login__form-title--logo {
+    width: 40px;
+    margin: auto;
+}
+
+.login__form-title--text h1 {
+    text-align: center;
+    margin: 0;
+    font-family: "Protest Strike", sans-serif;
+    font-size: 4rem;
+    line-height: 6rem;
+    color: var(--white-color);
+}
+
+/* Login Social Media */
+.login__socialMedia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login__socialMedia-btn {
+    width: 325px;
+    border-radius: 30px;
+    border: 1px solid #dcdbdb92;
+    background-color: transparent;
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.login__socialMedia-btn:hover {
+    border: 1px solid #dcdbdb;
+}
+
+.login__socialMedia-icon {
+    text-align: left;
+    font-size: 2rem;
+    margin-left: 16px;
+}
+
+.login__socialMedia-text {
+    margin: auto;
+    color: var(--white-color);
+}
+
+.login__socialMedia-icon--facebook {
+    color: rgb(24, 119, 242);
+}
+
+/* Login Or */
+.login__or {
+    margin: 40px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login__or-line {
+    width: 70%;
+    height: 1px;
+    background-color: #ffffff4a;
+}
+
+/* Login Input */
+
+.login__input-btn,
+.login__input-item {
+    width: 325px;
+    margin: auto;
+}
+
+.login__input-form input,
+.login__input-submit {
+    width: 100%;
+}
+
+
+.login__input-form input {
+    height: 50px;
+    border-radius: 3px;
+    border: 1px solid #999;
+    background-color: transparent;
+    font-weight: 500;
+    color: #dcdbdb;
+    font-size: 1.4rem;
+}
+
+.login__input-form input::placeholder {
+    color: #dcdbdb;
+}
+
+
+.login__input-submit {
+    height: 100%;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    background-color: var(--primary-color) !important;
+    color: var(--white-color);
+}
+
+.login__input-submit:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+}
+
+/* Forgot password */
+.login__password-forgot {
+    text-align: center;
+    font-size: 1.6rem;
+    margin: 30px 0px;
+}
+
+.login__password-link {
+    color: var(--white-color);
+}
+
+/* Don't have an account? */
+.login__account {
+    text-align: center;
+    font-size: 1.6rem;
+    padding-bottom: 70px;
+}
+
+.login__account-link {
+    color: var(--white-color);
+}
+
+/* Footer reCAPTCHA */
+.footer__reCAPTCHA {
+    margin-top: 30px;
+    padding: 30px 0px 0px 0px;
+    font-size: 1.3rem;
+    text-align: center;
+    background-color: var(--black-color);
+}
+
+.footer__reCAPTCHA-link {
+    color: var(--text-color) !important;
+}
