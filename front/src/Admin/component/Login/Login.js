@@ -61,7 +61,10 @@ const Login = () => {
       setErrorMessage("Invalid username or password");
     }
   };
-
+  const handleGoogleLogin = () => {
+    // Điều hướng trực tiếp đến Google OAuth
+    window.location.href = "http://localhost:4000/auth/google";
+  };
   return (
     <div className="app w-100">
       <div className="background-login">
@@ -79,12 +82,16 @@ const Login = () => {
             </div>
           </div>
           <div className="login__socialMedia">
-            <button className="login__socialMedia-btn login__socialMedia-btn--google mb-3 input-50">
+            <button
+              className="login__socialMedia-btn login__socialMedia-btn--google mb-3 input-50"
+              onClick={handleGoogleLogin}
+            >
               <i className="fa-brands fa-google login__socialMedia-icon login__socialMedia-icon--google" />
               <span className="login__socialMedia-text">
                 Đăng nhập bằng Google
               </span>
             </button>
+
             <button className="login__socialMedia-btn login__socialMedia-btn--facebook input-50">
               <i className="fa-brands fa-facebook login__socialMedia-icon login__socialMedia-icon--facebook" />
               <span className="login__socialMedia-text">

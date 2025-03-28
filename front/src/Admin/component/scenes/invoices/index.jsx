@@ -42,7 +42,7 @@ const Invoices = (props) => {
       flex: 5,
       renderCell: (params) => (
         <Link to={`/songs_edit/${params.row.id}`} color="white" underline="hover">
-          Edit
+          Chỉnh sửa
         </Link>
       ),
     },
@@ -56,7 +56,7 @@ const Invoices = (props) => {
           variant="contained"
           onClick={() => handleDelete(params.row.id)}  // Xử lý xóa bài hát
         >
-          Delete
+          Xóa
         </Button>
       ),
     },
@@ -93,7 +93,7 @@ const Invoices = (props) => {
 
   return (
     <Box m="20px">
-      <Header title="INVOICES" subtitle="List of Invoice Balances" />
+      <Header title="Danh sách bài hát" subtitle="đây là toàn bộ danh sách bài hát" />
       <Box m="40px 0 0 0" height="75vh">
         <DataGrid rows={rows} columns={columns} />
       </Box>

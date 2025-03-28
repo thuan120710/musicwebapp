@@ -77,14 +77,14 @@ const Contacts = (props) => {
 
   return (
     <Box m="20px">
-      <Header title="CONTACTS" subtitle="List of Contacts for Future Reference" />
+      <Header title="Quản lý danh mục" subtitle="Danh sách danh mục " />
       <Box m="40px 0 0 0" height="75vh">
         <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} />
       </Box>
 
       {/* Dialog for editing category */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Edit Category</DialogTitle>
+        <DialogTitle>Chỉnh sửa thể loại</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth

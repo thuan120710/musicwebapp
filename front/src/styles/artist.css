@@ -175,3 +175,7 @@ button {
     cursor: pointer;
    
   }
+  .filter-btns:hover {
+    background: #38b62a;
+    box-shadow: 0 6px 20px rgba(73, 225, 46, 0.7);
+}

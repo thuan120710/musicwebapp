@@ -56,7 +56,7 @@ const LibrarySongContainer = styled.div`
   width: 100%;
   display: flex;
   transition: all 0.3s ease;
-  background-color: ${(p) => (p.isActive ? "pink" : "white")};
+  background-color: ${(p) => (p.isActive ? "pink" : "green")};
   &:hover {
     background-color: lightblue;
     transition: all 0.3s ease;

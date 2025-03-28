@@ -14,20 +14,24 @@ import {
   TwitterIcon,
   WhatsappIcon,
 } from "react-share";
+import axios from "axios";
 
 function MusicPlayer({
   song,
   imgSrc,
   auto,
-  currentSongId,
+  currentSong, // Truyền currentSongId tại đây
   playNextSong,
+  toggleFavorite,
+  isLove,
   playPreviousSong,
 }) {
-  const [isLove, setLove] = useState(false);
   const [isPlaying, setPlay] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrenttime] = useState(0);
   const [volume, setVolume] = useState(50);
+  const [favorites, setFavorites] = useState([]);
+  const [songs, setSongs] = useState([]);
 
   const audioPlayer = useRef();
   const progressBar = useRef();
@@ -35,14 +39,30 @@ function MusicPlayer({
 
   // Đường dẫn URL đầy đủ của bài nhạc để chia sẻ
   const shareUrl = `http://localhost:4000/${song}`; // URL bài hát hiện tại
-  const title = `Nghe ngay bài hát ${song}!`; // Tiêu đề chia sẻ là tên bài hát
 
+  const title = `Nghe ngay bài hát ${song}!`; // Tiêu đề chia sẻ là tên bài hát
+  const currentSongId = currentSong?._id;
+  console.log(currentSong, "kkk");
+  console.log(isLove, "hhh");
   useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
     setDuration(seconds);
     progressBar.current.max = seconds;
   }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);
 
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/songs");
+        console.log(response, "hola");
+
+        setSongs(response.data); // Lưu dữ liệu bài hát vào state
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách bài hát:", error);
+      }
+    };
+    fetchSongs();
+  }, []); // Dependency array trống, chạy 1 lần khi component mount
   const changePlayPause = () => {
     const prevValue = isPlaying;
     setPlay(!prevValue);
@@ -90,77 +110,72 @@ function MusicPlayer({
     audioPlayer.current.volume = volumeValue;
     setVolume(event.target.value);
   };
-
   useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/favorites", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+    const user = JSON.parse(localStorage.getItem("user"));
+    if ((user && user._id) || user.avatarImage) {
+      localStorage.setItem("avatarImage", user.avatarImage); // Lưu ảnh đại diện
+    } else {
+      console.warn("User ID không tồn tại. Vui lòng đăng nhập.");
+    }
+  }, []);
 
-        const favorites = await response.json();
-        const isFavorite = favorites.some(
-          (fav) => fav.song_id === currentSongId
-        );
-        setLove(isFavorite);
-      } catch (error) {
-        console.error("Failed to fetch favorites:", error);
+  // Tải danh sách yêu thích khi trang load
+  useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.id; // Lấy userId từ localStorage
+    const fetchFavorites = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(
+            "http://localhost:4000/api/favorites",
+            {
+              params: { user_id: userId },
+            }
+          );
+          // setFavorites(response.data.map((fav) => fav.song_id));
+
+          setFavorites(response.data);
+        } catch (error) {
+          console.error("Lỗi khi tải danh sách yêu thích:", error);
+        }
       }
     };
+    fetchFavorites();
+  }, []);
+  const handleDeleteFavorite = async (songId) => {
+    const userId = JSON.parse(localStorage.getItem("user"))?._id; // Lấy userId từ localStorage
+    console.log(userId, 123);
 
-    if (currentSongId) {
-      checkFavoriteStatus();
-    }
-  }, [currentSongId]);
-
-  const changeSongLove = async (songId) => {
-    const userId = localStorage.getItem("user");
-
-    if (!userId) {
-      alert("Bạn cần đăng nhập để thêm vào danh sách yêu thích!");
-      return;
-    }
+    console.log(
+      `http://localhost:4000/api/deletefavourites/${songId}?user_id=${userId}`
+    );
 
     try {
-      if (!isLove) {
-        const response = await fetch("http://localhost:4000/api/favorites", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ song_id: songId, user_id: userId }),
-        });
+      if (!userId) {
+        console.error("User ID không tồn tại.");
+        return;
+      }
 
-        if (!response.ok) {
-          throw new Error("Failed to add to favorites");
-        }
-
-        alert("Đã thêm vào danh sách yêu thích!");
-        setLove(true); // Cập nhật trạng thái yêu thích
-      } else {
-        // Gửi yêu cầu xóa bài hát khỏi danh sách yêu thích
-        const response = await fetch("http://localhost:4000/api/favorites", {
+      const response = await fetch(
+        `http://localhost:4000/api/deletefavourites/${songId}?user_id=${userId}`,
+        {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ song_id: songId, user_id: userId }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to remove from favorites");
         }
+      );
+      console.log(response);
 
-        alert("Đã xóa khỏi danh sách yêu thích!");
-        setLove(false); // Cập nhật trạng thái không yêu thích
+      if (response.ok) {
+        setFavorites((prev) =>
+          prev.filter((fav) => fav?.song_id?._id !== songId)
+        ); // Cập nhật danh sách sau khi xóa
+      } else {
+        console.error("Error deleting favorite:", response.statusText);
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("Có lỗi xảy ra. Vui lòng thử lại!");
+      console.error("Error deleting favorite:", error);
     }
   };
+
+  // Hàm xử lý yêu thích (Cập nhật trạng thái và thông báo)
 
   const handleSongEnd = async (songId, userId) => {
     try {
@@ -174,7 +189,20 @@ function MusicPlayer({
     }
     playNextSong(); // Tự động chuyển bài hát khi kết thúc
   };
+  console.log("Song được truyền vào MusicPlayer:", song);
 
+  // Hàm sao chép liên kết bài hát
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(shareUrl)
+
+      .then(() => {
+        alert("Đã sao chép liên kết. Chia sẻ");
+      })
+      .catch((err) => {
+        console.error("Lỗi sao chép: ", err);
+      });
+  };
   return (
     <div className="container-fluid musicPlayer app">
       {/* Image Song */}
@@ -247,8 +275,13 @@ function MusicPlayer({
         <div className="col-md-4 d-flex justify-content-evenly align-items-center pb-4">
           <div className="listen-music__action d-flex">
             <div
-              className="listen-music__action-icon listen-music__action-icon--favorite hover-btn"
-              onClick={() => changeSongLove(currentSongId)}
+              className={`listen-music__action-icon listen-music__action-icon--favorite hover-btn ${
+                isLove ? "liked" : "not-liked"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(currentSongId);
+              }}
             >
               {isLove ? (
                 <i class="fa-regular fa-heart hover-btn"></i>
@@ -267,7 +300,7 @@ function MusicPlayer({
 
           <div className="listen-music__action-icon listen-music__action-icon--share">
             <i className="hover-btn">
-              <FacebookShareButton url={shareUrl} quote={title}>
+              <FacebookShareButton url={shareUrl} title={title}>
                 <FacebookIcon size={32} round />
               </FacebookShareButton>
             </i>
@@ -281,6 +314,9 @@ function MusicPlayer({
                 <WhatsappIcon size={32} round />
               </WhatsappShareButton>
             </i>
+            <button onClick={copyToClipboard} className="btn btn-primary">
+              Sao chép liên kết
+            </button>
           </div>
         </div>
       </div>

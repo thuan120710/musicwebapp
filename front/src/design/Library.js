@@ -96,10 +96,11 @@ const Button = styled.button`
   cursor: pointer;
   border: 2px solid rgb(65, 65, 65);
   padding: 0.5rem;
+
   margin-right: 3rem;
   transition: all 0.3s ease;
   &:hover {
-    background: rgb(65, 65, 65);
+    background: rgb(22, 105, 27);
     color: white;
   }
 `;

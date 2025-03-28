@@ -21,25 +21,35 @@ const generateToken = (user) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "2h" });
 };
 
+// Đăng nhập
 module.exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    // Kiểm tra nếu thiếu username hoặc password
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password are required" });
+    }
+
     // Tìm user trong cơ sở dữ liệu
     const user = await User.findOne({ username });
     if (!user) {
+      console.log(`User with username ${username} not found`);
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
     // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      console.log(`Incorrect password for user ${username}`);
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
     // Tạo token
     const token = generateToken(user);
-    console.log("Generated Token:", token); // Log để kiểm tra token
+    console.log("Generated Token:", token); // Log token
 
     // Gửi phản hồi bao gồm token
     res.json({
@@ -59,10 +69,12 @@ module.exports.login = async (req, res) => {
   }
 };
 
+// Đăng ký
 module.exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
+    // Kiểm tra nếu thiếu username, email hoặc password
     if (!username || !email || !password) {
       return res.status(400).json({
         status: false,
@@ -70,6 +82,15 @@ module.exports.register = async (req, res) => {
       });
     }
 
+    // Kiểm tra định dạng email hợp lệ
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid email format" });
+    }
+
+    // Kiểm tra nếu username hoặc email đã tồn tại
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return res
@@ -77,6 +98,7 @@ module.exports.register = async (req, res) => {
         .json({ status: false, message: "Username or email already exists." });
     }
 
+    // Mã hóa mật khẩu trước khi lưu
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
@@ -84,10 +106,24 @@ module.exports.register = async (req, res) => {
       password: hashedPassword,
     });
 
+    // Lưu người dùng vào cơ sở dữ liệu
     await user.save();
-    res
-      .status(201)
-      .json({ status: true, message: "User registered successfully", user });
+
+    // Tạo token cho người dùng vừa đăng ký
+    const token = generateToken(user);
+
+    // Gửi phản hồi bao gồm token
+    res.status(201).json({
+      status: true,
+      message: "User registered successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      token, // Đảm bảo gửi token về phía client
+    });
   } catch (error) {
     console.error("Error in registration:", error);
     res.status(500).json({ status: false, message: "Internal server error" });
@@ -129,6 +165,7 @@ module.exports.getAllUsers = async (req, res, next) => {
       "email",
       "username",
       "avatarImage",
+      "role",
       "_id",
     ]);
     return res.json(users);

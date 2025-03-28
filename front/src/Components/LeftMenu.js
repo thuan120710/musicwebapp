@@ -27,7 +27,7 @@ function LeftMenu() {
           <img
             src="./assets/img/logo_navbar.png"
             alt=""
-            className="header__logo-img--spotify"
+            className="header__logo-img--spotiafy"
             style={{ width: "60%" }}
           />
         </div>

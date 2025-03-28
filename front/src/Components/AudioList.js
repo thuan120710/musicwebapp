@@ -165,6 +165,7 @@ const AudioList = ({ item }) => {
   // Hàm xử lý yêu thích (Cập nhật trạng thái và thông báo)
   const toggleFavorite = async (songId) => {
     const isFavorite = favorites.find((item) => item?.song_id?._id === songId); // Kiểm tra trạng thái yêu thích
+    console.log("Payload from List:", { user_id: userId, song_id: songId });
 
     try {
       if (isFavorite) {
@@ -207,12 +208,12 @@ const AudioList = ({ item }) => {
   }, [userId]);
 
   // Update bài hát và ảnh khi item thay đổi
-  useEffect(() => {
-    if (item && item.length > 0) {
-      setSongs(item);
-      setMainSong(item[0]?.song, item[0]?.imgSrc, 0); // Thiết lập bài hát đầu tiên làm bài mặc định
-    }
-  }, [item]);
+  // useEffect(() => {
+  //   if (item && item.length > 0) {
+  //     setSongs(item);
+  //     setMainSong(item[0]?.song, item[0]?.imgSrc, 0); // Thiết lập bài hát đầu tiên làm bài mặc định
+  //   }
+  // }, [item]);
 
   // Thêm hàm fetchHistory
   const fetchHistory = async () => {
@@ -512,6 +513,7 @@ const AudioList = ({ item }) => {
   }, [item]);
 
   const setMainSong = async (songSrc, imgSrc, index) => {
+    const currentSong = song;
     setSong(songSrc);
     setImage(imgSrc);
     setAuto(true);
@@ -652,7 +654,7 @@ const AudioList = ({ item }) => {
       }
     }
   };
-
+  console.log(currentSong, "kietlac");
   return (
     <div className="AudioList">
       <div className="audioList-title">
@@ -707,11 +709,18 @@ const AudioList = ({ item }) => {
         song={song}
         imgSrc={img}
         autoplay={auto}
-        currentSong={currentSong}
-        currentSongId={currentSong ? currentSong.id : null} // Pass current song ID
+        currentSong={songs[currentSongIndex]}
+        // currentSongId={songs[currentSongIndex] ? songs[currentSongIndex] : null}
+        // Pass current song ID
+        toggleFavorite={toggleFavorite}
         setCurrentSongIndex={setCurrentSongIndex}
         playNextSong={playNextSong}
         playPreviousSong={playPreviousSong}
+        isLove={favorites.some((item) => {
+          console.log(item, "item");
+
+          return item?.song_id?._id === songs[currentSongIndex]._id;
+        })}
       />
       {/* Hiển thị phần gợi ý bài hát */}
       {userId && (

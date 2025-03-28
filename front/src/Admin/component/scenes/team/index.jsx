@@ -32,7 +32,7 @@ const Team = (props) => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE Category" subtitle="Create a New Category" />
+      <Header title="Tạo danh mục" subtitle="Tạo danh mục mới" />
       <ToastContainer position="top-right" autoClose={3000} /> {/* Container hiển thị toast */}
       <Formik
         initialValues={{ name: "" }} // Giá trị khởi tạo ban đầu
@@ -70,7 +70,7 @@ const Team = (props) => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New Category
+                Tạo Danh mục mới
               </Button>
             </Box>
           </form>

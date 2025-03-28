@@ -113,9 +113,30 @@ const Sidebars = () => {
               }}
             >
               {/* Image Avatar */}
-              <Box sx={{ borderRadius: "50%", width: "100px", height: "100px", border: "2px solid var(--primary-color)" }}>
-                <img alt="profile-user" width="100%" height="100%" src={`../../assets/user.png`} />
-              </Box>
+              {/* Image Avatar */}
+                <Box
+                  sx={{
+                    borderRadius: "50%",
+                    width: "100px",
+                    height: "100px",
+                    border: "2px solid var(--primary-color)",
+                    overflow: "hidden", // Đảm bảo ảnh không vượt ra khỏi khung
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    alt="profile-user"
+                    src="../../assets/thuan.png"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover", // Đảm bảo ảnh lấp đầy khung
+                    }}
+                  />
+                </Box>
+
 
               <Box sx={{ marginTop: "15px" }}>
                 {/* Name */}
@@ -129,13 +150,13 @@ const Sidebars = () => {
           )}
 
           <Box>
-            <Item
+            {/* <Item
               title="Bảng điều khiển"
               to="/dashboard"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
 
             <Typography
               variant="h6"
@@ -145,15 +166,22 @@ const Sidebars = () => {
               Data
             </Typography>
             <Item
+              title="Quản lý Người dùng"
+              to="/admin/users"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Quản lý danh mục"
-              to="/team"
+              to="/admin/team"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Chỉnh sửa danh mục"
-              to="/contacts"
+              to="/admin/contacts"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -177,7 +205,7 @@ const Sidebars = () => {
             </Typography>
             <Item
               title="Tạo bài hát"
-              to="/form"
+              to="/admin/form"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -185,14 +213,14 @@ const Sidebars = () => {
             />
             <Item
               title="Lịch"
-              to="/calendar"
+              to="/admin/calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Hỏi và đáp"
-              to="/faq"
+              to="/admin/faq"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

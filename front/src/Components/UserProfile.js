@@ -77,6 +77,7 @@ const UserProfile = () => {
     // Thêm các dữ liệu khác vào FormData
     formDataToSend.append("username", formData.username);
     formDataToSend.append("email", formData.email);
+    formDataToSend.append("fullName", formData.fullName);
     formDataToSend.append("bio", formData.bio);
     formDataToSend.append("phoneNumber", formData.phoneNumber);
     formDataToSend.append("address", formData.address);
@@ -119,6 +120,10 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile">
+      {/* Nút Trở về */}
+      <button className="back-btn" onClick={() => window.history.back()}>
+        Trở về
+      </button>
       <h2>Thông tin người dùng</h2>
 
       <div className="profile-picture">

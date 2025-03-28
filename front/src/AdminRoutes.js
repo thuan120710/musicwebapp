@@ -75,19 +75,19 @@ function AdminRoutes(props) {
             <Switch>
               {/* Định nghĩa route cho trang login */}
               <Route path="/login" component={Login} exact />
-              <Route path="/admin" component={Dashboard} exact />
+              <Route path="/admin" component={UserList} exact />
               <Route path="/registration" component={Register} exact />
-              <Route path="/team" component={Team} exact />
-              <Route path="/contacts" component={Contacts} exact />
+              <Route path="/admin/team" component={Team} exact />
+              <Route path="/admin/contacts" component={Contacts} exact />
               <Route path="/invoices" component={Invoices} exact />
-              <Route path="/form" component={Form} exact />
+              <Route path="/admin/form" component={Form} exact />
               <Route path="/songs_edit/:id" component={SongsEdit} exact />
-              <Route path="/bar" component={Bar} exact />
-              <Route path="/pie" component={Pie} exact />
-              <Route path="/line" component={Line} exact />
-              <Route path="/faq" component={FAQ} exact />
-              <Route path="/calendar" component={Calendar} exact />
-              <Route path="/geography" component={Geography} exact />
+              <Route path="/admin/bar" component={Bar} exact />
+              <Route path="/admin/pie" component={Pie} exact />
+              <Route path="/admin/line" component={Line} exact />
+              <Route path="/admin/faq" component={FAQ} exact />
+              <Route path="/admin/calendar" component={Calendar} exact />
+              <Route path="/admin/geography" component={Geography} exact />
               <Route path="/admin/users" component={UserList} />
               <Route path="/admin/add-user" component={UserForm} />
               <Route path="/admin/edit-user/:userId" component={UserForm} />

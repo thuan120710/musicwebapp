@@ -153,6 +153,7 @@ function PlaylistPage() {
           value={newPlaylistName}
           onChange={(e) => setNewPlaylistName(e.target.value)}
         />
+
         <Button onClick={createPlaylist}>Tạo Playlist</Button>
       </div>
 

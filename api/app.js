@@ -20,6 +20,7 @@ const multer = require("multer");
 const adminRoutes = require("./routes/adminRoutes"); // Đường dẫn tới file router của bạn
 const listeningHistoryRoute = require("./routes/listeningHistory");
 const { PlayList } = require("../front/src/Components/PlayList");
+const authRoutes = require("./routes/authRoutes");
 const path = require("path"); // Đảm bảo bạn đã require module 'path'
 // const songRouter = require("./routes/song");
 
@@ -28,11 +29,17 @@ require("dotenv").config();
 
 // Initialize Express app
 const app = express();
+// const cookieSession = require("cookie-session");
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+app.use(cors()); // Allow all origins for testing. Adjust in production.
 // Middleware
 app.use(express.json());
-app.use(cookieParser());
-app.use(cors()); // Allow all origins for testing. Adjust in production.
+
+// app.use(cookieParser());
+
 // app.use("/uploads", express.static(__dirname + "/uploads")); // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -47,6 +54,171 @@ mongoose.connect(process.env.MONGO_URL, {
 mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
+
+function generateToken(user) {
+  // Bạn có thể thay đổi payload và thời gian hết hạn theo nhu cầu của mình
+  const payload = {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+  };
+
+  // Tạo token với payload và secret key (cần bảo mật secret key)
+  const token = jwt.sign(payload, "your_secret_key", { expiresIn: "1h" });
+
+  return token;
+}
+
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true,
+  })
+);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false, // Không lưu lại session nếu không thay đổi
+    saveUninitialized: false, // Lưu lại session ngay cả khi không có thay đổi
+    cookie: { secure: false }, // Nếu đang sử dụng HTTP (chưa dùng HTTPS), set secure là false
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Lưu thông tin người dùng vào session
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Lưu ID người dùng vào session
+});
+
+passport.deserializeUser(async (id, done) => {
+  console.log("Deserialize User ID:", id);
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      console.error("User not found in database");
+      return done(null, false);
+    }
+    console.log("Deserialized User:", user);
+    done(null, user);
+  } catch (err) {
+    console.error("Error in deserializeUser:", err);
+    done(err, null);
+  }
+});
+
+app.use((req, res, next) => {
+  console.log("Request Path:", req.path);
+  console.log("Request Session:", req.session);
+  console.log("Request User:", req.user);
+  next();
+});
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:4000/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      console.log("Google profile:", profile); // Log thông tin profile từ Google
+      console.log("Access Token:", accessToken);
+
+      try {
+        // Kiểm tra xem người dùng đã tồn tại trong cơ sở dữ liệu chưa qua googleId hoặc email
+        let user = await User.findOne({
+          $or: [{ googleId: profile.id }, { email: profile.emails[0].value }],
+        });
+
+        if (!user) {
+          // Nếu không tìm thấy người dùng, tạo mới
+          user = new User({
+            googleId: profile.id,
+            username: profile.displayName,
+            email: profile.emails[0].value,
+            avatarUrl: profile.photos[0].value,
+          });
+
+          await user.save();
+        }
+
+        // Gọi hàm done để tiếp tục với quá trình đăng nhập
+        return done(null, user);
+      } catch (err) {
+        console.error("Error during authentication:", err); // Log lỗi nếu có
+        return done(err, false);
+      }
+    }
+  )
+);
+
+// Route khởi tạo quá trình đăng nhập bằng Google
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"], // Các quyền cần lấy từ Google
+  })
+);
+
+// // Route xử lý callback sau khi Google xác thực
+// app.get(
+//   "/auth/google",
+//   passport.authenticate("google", {
+//     scope: ["profile", "email"], // Các quyền cần lấy từ Google
+//   })
+// );
+
+// Route xử lý callback sau khi Google xác thực
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login", // Nếu xác thực thất bại, chuyển hướng tới trang login
+  }),
+  (req, res) => {
+    // Sau khi xác thực qua Google thành công
+    console.log("User session:", req.session);
+    console.log("User:", req.user); // Kiểm tra xem người dùng đã được thêm vào session chưa
+
+    // Tạo JWT cho người dùng
+    const token = generateToken(req.user);
+
+    // Bạn có thể lưu token vào cookie nếu muốn
+    res.cookie("token", token, { httpOnly: true }); // Thêm token vào cookie
+
+    // Chuyển hướng người dùng về trang chủ "/"
+    res.redirect("http://localhost:3001/artist"); // Chuyển hướng người dùng về trang chủ sau khi đăng nhập thành công
+  }
+);
+
+// Route đăng xuất
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect("http://localhost:3001/login");
+  });
+});
+
+// app.get("/api/getAdminProfile", (req, res) => {
+//   // Kiểm tra nếu người dùng đã đăng nhập
+//   if (!req.user) {
+//     return res.status(401).json({ error: "Unauthorized" });
+//   }
+
+//   // Trả về thông tin người dùng từ session
+//   res.json({
+//     user: {
+//       id: req.user.id,
+//       displayName: req.user.username, // Hoặc từ profile
+//       email: req.user.email,
+//       avatarUrl: req.user.avatarUrl,
+//     },
+//   });
+// });
 
 exports.deleteComment = async (req, res) => {
   try {
@@ -423,6 +595,27 @@ app.use("/api", playListRouter);
 app.use("/api", adminRoutes);
 app.use("/api", deleteRouter);
 app.use("/api", userRoutes);
+// const isAdmin = (req, res, next) => {
+//   if (req.isAuthenticated() && req.user.role === "admin") {
+//     return next();
+//   } else {
+//     res.status(403).json({ message: "Permission denied" });
+//   }
+// };
+
+// app.use("/api/admin", isAdmin, adminRoutes);
+
+app.use(authRoutes);
+// app.use(
+//   cookieSession({
+//     name: "session",
+//     keys: [process.env.SESSION_SECRET || "secret"], // Khóa bảo mật session
+//     maxAge: 24 * 60 * 60 * 1000, // Thời gian tồn tại của session
+//   })
+// );
+
+// Cấu hình Passport
+
 // app.use("/api/admin", adminRoutes); // Cấu hình để các route bắt đầu với /api/admin
 // app.use("/api", listeningHistoryRoute);
 // // Sử dụng route songRouter cho các đường dẫn bắt đầu bằng '/api'

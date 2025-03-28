@@ -1,58 +1,117 @@
 /* CSS cho UserList */
 .user-list {
-  background-color: #2c2f38; /* Nền tối */
-  color: white; /* Chữ sáng */
+  background-color: #1e1e2f; /* Nền tối xám đen */
+  color: #a1ffa5; /* Chữ màu xanh lá nhạt */
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng đổ */
+  border: 2px solid #4caf50; /* Viền xanh lá */
+  transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng khi hover */
+  font-size: 15px;
+}
+
+.user-list:hover {
+  transform: scale(1.0); /* Hiệu ứng phóng to nhẹ */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
 .user-list h2 {
-  color: #fff; /* Tiêu đề sáng */
+  color: #4caf50; /* Tiêu đề màu xanh lá */
+  font-weight: bold;
+  text-align: center;
 }
 
 .user-list table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
 .user-list th,
 .user-list td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #333; /* Đường kẻ màu tối */
 }
 
 .user-list th {
-  background-color: #444;
+  background-color: #333;
+  color: #4caf50; /* Chữ tiêu đề cột màu xanh lá */
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.user-list td {
+  color: #a1ffa5; /* Chữ trong bảng màu xanh lá nhạt */
 }
 
 .user-list td button {
-  background-color: #4CAF50; /* Màu nút sáng */
+  background-color: #4caf50; /* Màu nút sáng */
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 16px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển màu và phóng to */
 }
 
 .user-list td button:hover {
-  background-color: #45a049;
+  background-color: #45a049; /* Đậm hơn khi hover */
+  transform: scale(1.1); /* Phóng to nhẹ khi hover */
 }
-/* CSS cho thanh tìm kiếm */
+
+.user-list td button:active {
+  transform: scale(0.95); /* Nhấn nút thu nhỏ nhẹ */
+}
+
+.user-list td button.delete {
+  background-color: #ff4f4f; /* Màu nút xóa đỏ */
+  color: #fff;
+}
+
+.user-list td button.delete:hover {
+  background-color: #d64545; /* Đậm hơn khi hover */
+}
+
 .search-bar {
-  margin: 10px 0;
+  margin: 20px 0;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid #4caf50; /* Viền xanh lá */
+  border-radius: 8px;
   outline: none;
+  background-color: #1e1e2f; /* Nền tối */
+  color: #a1ffa5; /* Chữ màu xanh lá nhạt */
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .search-bar input:focus {
-  border-color: #4CAF50;
+  border-color: #45a049; /* Viền xanh đậm hơn */
+  box-shadow: 0 0 10px #45a049; /* Hiệu ứng ánh sáng */
+}
+
+/* Nút thêm người dùng */
+.add-user-btn {
+  background-color: #4caf50; /* Màu xanh lá */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.add-user-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+}
+
+.add-user-btn:active {
+  transform: scale(0.95); /* Nhấn nút thu nhỏ nhẹ */
 }

@@ -190,10 +190,27 @@
   }
 }
 
+
 @media screen and (min-width: 550px) and (max-width: 1080px) {
   .musicPlayer .songImage {
     width: 100px;
     min-width: 100px;
     height: 100px;
   }
+}
+/* Trạng thái mặc định của icon tim */
+/* Trạng thái mặc định của icon tim */
+.listen-music__action-icon--favorite i {
+  color: var(--white-color); /* Màu trắng mặc định */
+  transition: color 0.3s ease;
+}
+
+/* Màu khi bài hát được yêu thích */
+.listen-music__action-icon--favorite.liked i {
+  color: green; /* Màu xanh khi đã yêu thích */
+}
+
+/* Màu khi bài hát không còn yêu thích */
+.listen-music__action-icon--favorite.not-liked i {
+  color: rgb(158, 147, 138); /* Màu tối khi không yêu thích */
 }

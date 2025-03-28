@@ -64,7 +64,7 @@ router.put(
   async (req, res) => {
     try {
       const userId = req.params.id;
-      const { username, email, bio, phoneNumber, address } = req.body;
+      const { username, email, fullName, bio, phoneNumber, address } = req.body;
 
       // Kiểm tra nếu có file avatar được gửi lên
       let avatarImage = null;
@@ -81,6 +81,7 @@ router.put(
       // Cập nhật thông tin người dùng
       if (username) user.username = username;
       if (email) user.email = email;
+      if (fullName) user.fullName = fullName;
       if (bio) user.bio = bio;
       if (phoneNumber) user.phoneNumber = phoneNumber;
       if (address) user.address = address;

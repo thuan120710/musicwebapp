@@ -20,7 +20,7 @@ const MenuList = [
   {
     id: 3,
     icon: <FaMicrophoneAlt />,
-    name: "Tác giả",
+    name: "Nghệ sĩ",
     path: "/artist",
   },
   {
