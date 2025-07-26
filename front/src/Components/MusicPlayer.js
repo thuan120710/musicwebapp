@@ -1,11 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import "../styles/MusicPlayer.css";
-import { connect } from "react-redux";
-import {
-  fetchFavorites,
-  deleteFavorites,
-} from "../Admin/actions/FavoritesAction";
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -14,13 +8,13 @@ import {
   TwitterIcon,
   WhatsappIcon,
 } from "react-share";
-import axios from "axios";
+import { FaLink, FaFacebookMessenger } from "react-icons/fa";
 
 function MusicPlayer({
   song,
   imgSrc,
   auto,
-  currentSong, // Truyền currentSongId tại đây
+  currentSong,
   playNextSong,
   toggleFavorite,
   isLove,
@@ -30,43 +24,30 @@ function MusicPlayer({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrenttime] = useState(0);
   const [volume, setVolume] = useState(50);
-  const [favorites, setFavorites] = useState([]);
-  const [songs, setSongs] = useState([]);
-
+  const [copied, setCopied] = useState(false);
   const audioPlayer = useRef();
   const progressBar = useRef();
   const animationRef = useRef();
 
-  // Đường dẫn URL đầy đủ của bài nhạc để chia sẻ
-  const shareUrl = `http://localhost:4000/${song}`; // URL bài hát hiện tại
-
-  const title = `Nghe ngay bài hát ${song}!`; // Tiêu đề chia sẻ là tên bài hát
+  const shareUrl = `http://localhost:4000/${song}`;
+  const title = `Nghe ngay bài hát ${currentSong?.songName || "Bài hát"}!`;
   const currentSongId = currentSong?._id;
-  console.log(currentSong, "kkk");
-  console.log(isLove, "hhh");
-  useEffect(() => {
-    const seconds = Math.floor(audioPlayer.current.duration);
-    setDuration(seconds);
-    progressBar.current.max = seconds;
-  }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);
 
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/api/songs");
-        console.log(response, "hola");
+    if (audioPlayer.current && audioPlayer.current.duration) {
+      const seconds = Math.floor(audioPlayer.current.duration);
+      setDuration(seconds);
+      progressBar.current.max = seconds;
+    }
+  }, [
+    audioPlayer?.current?.loadedmetadata,
+    audioPlayer?.current?.readyState,
+    song,
+  ]);
 
-        setSongs(response.data); // Lưu dữ liệu bài hát vào state
-      } catch (error) {
-        console.error("Lỗi khi tải danh sách bài hát:", error);
-      }
-    };
-    fetchSongs();
-  }, []); // Dependency array trống, chạy 1 lần khi component mount
   const changePlayPause = () => {
     const prevValue = isPlaying;
     setPlay(!prevValue);
-
     if (!prevValue) {
       audioPlayer.current.play();
       animationRef.current = requestAnimationFrame(whilePlaying);
@@ -110,279 +91,152 @@ function MusicPlayer({
     audioPlayer.current.volume = volumeValue;
     setVolume(event.target.value);
   };
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if ((user && user._id) || user.avatarImage) {
-      localStorage.setItem("avatarImage", user.avatarImage); // Lưu ảnh đại diện
-    } else {
-      console.warn("User ID không tồn tại. Vui lòng đăng nhập.");
-    }
-  }, []);
 
-  // Tải danh sách yêu thích khi trang load
-  useEffect(() => {
-    const userId = JSON.parse(localStorage.getItem("user"))?.id; // Lấy userId từ localStorage
-    const fetchFavorites = async () => {
-      if (userId) {
-        try {
-          const response = await axios.get(
-            "http://localhost:4000/api/favorites",
-            {
-              params: { user_id: userId },
-            }
-          );
-          // setFavorites(response.data.map((fav) => fav.song_id));
-
-          setFavorites(response.data);
-        } catch (error) {
-          console.error("Lỗi khi tải danh sách yêu thích:", error);
-        }
-      }
-    };
-    fetchFavorites();
-  }, []);
-  const handleDeleteFavorite = async (songId) => {
-    const userId = JSON.parse(localStorage.getItem("user"))?._id; // Lấy userId từ localStorage
-    console.log(userId, 123);
-
-    console.log(
-      `http://localhost:4000/api/deletefavourites/${songId}?user_id=${userId}`
-    );
-
-    try {
-      if (!userId) {
-        console.error("User ID không tồn tại.");
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:4000/api/deletefavourites/${songId}?user_id=${userId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      console.log(response);
-
-      if (response.ok) {
-        setFavorites((prev) =>
-          prev.filter((fav) => fav?.song_id?._id !== songId)
-        ); // Cập nhật danh sách sau khi xóa
-      } else {
-        console.error("Error deleting favorite:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error deleting favorite:", error);
-    }
+  // Copy link to clipboard
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
   };
 
-  // Hàm xử lý yêu thích (Cập nhật trạng thái và thông báo)
-
-  const handleSongEnd = async (songId, userId) => {
-    try {
-      await fetch("http://localhost:4000/api/track-listened", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ songId, userId }),
-      });
-    } catch (error) {
-      console.error("Error tracking listened song:", error);
-    }
-    playNextSong(); // Tự động chuyển bài hát khi kết thúc
-  };
-  console.log("Song được truyền vào MusicPlayer:", song);
-
-  // Hàm sao chép liên kết bài hát
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(shareUrl)
-
-      .then(() => {
-        alert("Đã sao chép liên kết. Chia sẻ");
-      })
-      .catch((err) => {
-        console.error("Lỗi sao chép: ", err);
-      });
-  };
   return (
-    <div className="container-fluid musicPlayer app">
-      {/* Image Song */}
-      <div className="row py-5">
-        {/* Cột giữa */}
-        <div className="col-md-12 d-flex justify-content-center">
-          <div className="listen-music__image">
-            <img
-              className="w-100 h-100 rounded"
-              src={`http://localhost:4000/${imgSrc}`}
-              alt={currentSongId}
+    <div
+      className="music-player-card glossy-theme"
+      style={{ width: "420px", maxWidth: "99vw", minHeight: "340px" }}
+    >
+      <div className="mp-card-album-wrap">
+        <div
+          className={`mp-album-art mp-album-art-circle${
+            isPlaying ? " mp-album-art--playing" : ""
+          }`}
+          style={{
+            width: "120px",
+            height: "120px",
+            minWidth: "120px",
+            minHeight: "120px",
+          }}
+        >
+          <img
+            src={`http://localhost:4000/${imgSrc}`}
+            alt={currentSongId}
+            style={{ width: "112px", height: "112px" }}
+          />
+        </div>
+      </div>
+      <div className="mp-card-content">
+        <div className="mp-song-info">
+          <div className="mp-title">{currentSong?.songName || "Bài hát"}</div>
+          <div className="mp-artist">{currentSong?.artist || "Nghệ sĩ"}</div>
+        </div>
+        <audio
+          src={`http://localhost:4000/${song}`}
+          preload="metadata"
+          ref={audioPlayer}
+          onEnded={playNextSong}
+          autoPlay={auto}
+        />
+        <div
+          className="mp-controls mp-controls-card"
+          style={{ gap: "28px", marginTop: "16px" }}
+        >
+          <button
+            className="mp-btn"
+            onClick={playPreviousSong}
+            title="Bài trước"
+          >
+            <i className="fa-solid fa-backward-step" />
+          </button>
+          <button
+            className="mp-btn mp-play"
+            onClick={changePlayPause}
+            title={isPlaying ? "Tạm dừng" : "Phát"}
+          >
+            {isPlaying ? (
+              <i className="fa-solid fa-pause" />
+            ) : (
+              <i className="fa-solid fa-play" />
+            )}
+          </button>
+          <button className="mp-btn" onClick={playNextSong} title="Bài tiếp">
+            <i className="fa-solid fa-forward-step" />
+          </button>
+        </div>
+        <div className="mp-progress-wrap mp-progress-card">
+          <span className="mp-time">{calculateTime(currentTime)}</span>
+          <input
+            type="range"
+            className="mp-progress"
+            ref={progressBar}
+            defaultValue="0"
+            onChange={changeProgress}
+          />
+          <span className="mp-time">
+            {duration && !isNaN(duration) && calculateTime(duration)
+              ? calculateTime(duration)
+              : "--:--"}
+          </span>
+        </div>
+        <div className="mp-bottom-row mp-bottom-row-card">
+          <div className="mp-volume">
+            <i className="fa-solid fa-volume-high" />
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={volume}
+              onChange={handleVolumeChange}
             />
           </div>
-        </div>
-      </div>
-
-      <audio
-        src={`http://localhost:4000/${song}`}
-        preload="metadata"
-        ref={audioPlayer}
-        onEnded={() => handleSongEnd(currentSongId, "userId")}
-      />
-
-      {/* Player Controls */}
-      <div className="row mt-5 mb-4">
-        {/* Cột trái */}
-        <div className="col-md-4 d-flex justify-content-center">
-          <div className="listen-music__volume d-flex align-items-end pb-4">
-            <div className="listen-music__volume-icon d-flex align-items-center">
-              <i className="fa-solid fa-volume-high me-3" />
-              <input
-                type="range"
-                min={0}
-                max={100}
-                defaultValue="{volume}"
-                onchange="{handleVolumeChange}"
-                className=""
-              />
-            </div>
-          </div>
-        </div>
-        {/* Cột giữa */}
-        <div className="col-md-4">
-          <div className="play-music__controls d-flex justify-content-center">
-            <div
-              className="play-music__controls-icon play-music__controls-icon--backward"
-              onClick={() => playPreviousSong()}
-            >
-              <i className="fa-solid fa-backward-step" />
-            </div>
-            <div
-              className="play-music__controls-icon play-music__controls-icon--playOrPause hover-btn"
-              onClick={changePlayPause}
-            >
-              {isPlaying ? (
-                <i class="fa-solid fa-pause hover-btn"></i>
-              ) : (
-                <i className="fa-solid fa-play hover-btn" />
-              )}
-            </div>
-            <div
-              className="play-music__controls-icon play-music__controls-icon--step"
-              onClick={() => playNextSong()}
-            >
-              <i className="fa-solid fa-forward-step" />
-            </div>
-          </div>
-        </div>
-        {/* Cột phải */}
-        <div className="col-md-4 d-flex justify-content-evenly align-items-center pb-4">
-          <div className="listen-music__action d-flex">
-            <div
-              className={`listen-music__action-icon listen-music__action-icon--favorite hover-btn ${
-                isLove ? "liked" : "not-liked"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFavorite(currentSongId);
+          <button
+            className={`mp-btn mp-fav${isLove ? " liked" : ""}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(currentSongId);
+            }}
+            title="Yêu thích"
+          >
+            <i
+              className={isLove ? "fa-solid fa-heart" : "fa-regular fa-heart"}
+            />
+          </button>
+          <div className="mp-share mp-share-card">
+            <FacebookShareButton url={shareUrl} title={title}>
+              <FacebookIcon size={28} round />
+            </FacebookShareButton>
+            <TwitterShareButton url={shareUrl} title={title}>
+              <TwitterIcon size={28} round />
+            </TwitterShareButton>
+            <WhatsappShareButton url={shareUrl} title={title}>
+              <WhatsappIcon size={28} round />
+            </WhatsappShareButton>
+            <button
+              className="mp-btn mp-share-btn"
+              title="Chia sẻ Ali/Zalo"
+              onClick={() => handleCopy()}
+              style={{
+                background: "#00bcd4",
+                color: "#fff",
+                fontSize: 18,
+                marginLeft: 2,
+                borderRadius: "50%",
               }}
             >
-              {isLove ? (
-                <i class="fa-regular fa-heart hover-btn"></i>
-              ) : (
-                <i className="fa-solid fa-heart hover-btn" />
-              )}
-            </div>
-            <div
-              className="listen-music__action-icon listen-music__action-icon--download hover-btn"
-              href={song}
-              download="audio.mp3"
-            >
-              <i className="fa-solid fa-download" />
-            </div>
-          </div>
-
-          <div className="listen-music__action-icon listen-music__action-icon--share">
-            <i className="hover-btn">
-              <FacebookShareButton url={shareUrl} title={title}>
-                <FacebookIcon size={32} round />
-              </FacebookShareButton>
-            </i>
-            <i className="hover-btn">
-              <TwitterShareButton url={shareUrl} title={title}>
-                <TwitterIcon size={32} round />
-              </TwitterShareButton>
-            </i>
-            <i className="hover-btn">
-              <WhatsappShareButton url={shareUrl} title={title}>
-                <WhatsappIcon size={32} round />
-              </WhatsappShareButton>
-            </i>
-            <button onClick={copyToClipboard} className="btn btn-primary">
-              Sao chép liên kết
+              <FaFacebookMessenger />
             </button>
-          </div>
-        </div>
-      </div>
-      {/* Audio Time */}
-      <div className="row mt-5 pb-5">
-        <div className="col-md-6 offset-md-3">
-          <div className="listen-music__timer d-flex justify-content-center align-items-center">
-            <div className="listen-music__timer-icon listen-music__timer-icon--current-time fs-4 me-3">
-              {calculateTime(currentTime)}
-            </div>
-
-            <div className="listen-music__timer-icon listen-music__timer-icon--progress-bar d-flex flex-grow-1">
-              <input
-                type="range"
-                className="progressBar"
-                ref={progressBar}
-                defaultValue="0"
-                onChange={changeProgress}
-                autoPlay={auto}
-              />
-            </div>
-
-            <div className="listen-music__timer-icon listen-music__timer-icon--remaining-time fs-4 ms-3">
-              {duration && !isNaN(duration) && calculateTime(duration)
-                ? duration && !isNaN(duration) && calculateTime(duration)
-                : "--:--"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal */}
-      <div
-        className="modal fade"
-        id="music"
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-        data-bs-backdrop="static"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content text-dark pb-4 pt-1 ps-2">
-            <div className="modal-header border-0">
-              <h1 className="modal-title" id="exampleModalLabel">
-                Bạn muốn chia sẻ lên
-              </h1>
-              <button
-                type="button"
-                className="btn-close me-2"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              />
-            </div>
-            <div className="modal-body pt-4">
-              <div className="modal-body__share d-flex justify-content-center">
-                <div className="modal-body__share-icon modal-body__share-icon--facebook">
-                  <i>
-                    <FacebookShareButton url={shareUrl} quote={title}>
-                      <FacebookIcon size={32} round />
-                    </FacebookShareButton>
-                  </i>
-                </div>
-                <div className="modal-body__share-icon modal-body__share-icon--twitter mx-4"></div>
-                <div className="modal-body__share-icon modal-body__share-icon--whatsapp"></div>
-              </div>
-            </div>
+            <button
+              className="mp-btn mp-copy"
+              title={copied ? "Đã sao chép!" : "Sao chép liên kết"}
+              onClick={handleCopy}
+              style={{
+                background: copied ? "#7fffd4" : "#fff",
+                color: "#0f2027",
+                fontSize: 18,
+                marginLeft: 2,
+                borderRadius: "50%",
+              }}
+            >
+              <FaLink />
+            </button>
           </div>
         </div>
       </div>
@@ -390,10 +244,4 @@ function MusicPlayer({
   );
 }
 
-const mapStateToProps = (state) => ({
-  favorites: state.FavoritesAdmin.favorites || [],
-});
-
-export default connect(mapStateToProps, { fetchFavorites, deleteFavorites })(
-  MusicPlayer
-);
+export default MusicPlayer;

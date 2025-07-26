@@ -76,92 +76,92 @@ app.use(
     credentials: true,
   })
 );
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false, // Không lưu lại session nếu không thay đổi
-    saveUninitialized: false, // Lưu lại session ngay cả khi không có thay đổi
-    cookie: { secure: false }, // Nếu đang sử dụng HTTP (chưa dùng HTTPS), set secure là false
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false, // Không lưu lại session nếu không thay đổi
+//     saveUninitialized: false, // Lưu lại session ngay cả khi không có thay đổi
+//     cookie: { secure: false }, // Nếu đang sử dụng HTTP (chưa dùng HTTPS), set secure là false
+//   })
+// );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-// Lưu thông tin người dùng vào session
-passport.serializeUser((user, done) => {
-  done(null, user.id); // Lưu ID người dùng vào session
-});
+// // Lưu thông tin người dùng vào session
+// passport.serializeUser((user, done) => {
+//   done(null, user.id); // Lưu ID người dùng vào session
+// });
 
-passport.deserializeUser(async (id, done) => {
-  console.log("Deserialize User ID:", id);
-  try {
-    const user = await User.findById(id);
-    if (!user) {
-      console.error("User not found in database");
-      return done(null, false);
-    }
-    console.log("Deserialized User:", user);
-    done(null, user);
-  } catch (err) {
-    console.error("Error in deserializeUser:", err);
-    done(err, null);
-  }
-});
+// passport.deserializeUser(async (id, done) => {
+//   console.log("Deserialize User ID:", id);
+//   try {
+//     const user = await User.findById(id);
+//     if (!user) {
+//       console.error("User not found in database");
+//       return done(null, false);
+//     }
+//     console.log("Deserialized User:", user);
+//     done(null, user);
+//   } catch (err) {
+//     console.error("Error in deserializeUser:", err);
+//     done(err, null);
+//   }
+// });
 
-app.use((req, res, next) => {
-  console.log("Request Path:", req.path);
-  console.log("Request Session:", req.session);
-  console.log("Request User:", req.user);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Request Path:", req.path);
+//   console.log("Request Session:", req.session);
+//   console.log("Request User:", req.user);
+//   next();
+// });
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:4000/auth/google/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      console.log("Google profile:", profile); // Log thông tin profile từ Google
-      console.log("Access Token:", accessToken);
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: "http://localhost:4000/auth/google/callback",
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       console.log("Google profile:", profile); // Log thông tin profile từ Google
+//       console.log("Access Token:", accessToken);
 
-      try {
-        // Kiểm tra xem người dùng đã tồn tại trong cơ sở dữ liệu chưa qua googleId hoặc email
-        let user = await User.findOne({
-          $or: [{ googleId: profile.id }, { email: profile.emails[0].value }],
-        });
+//       try {
+//         // Kiểm tra xem người dùng đã tồn tại trong cơ sở dữ liệu chưa qua googleId hoặc email
+//         let user = await User.findOne({
+//           $or: [{ googleId: profile.id }, { email: profile.emails[0].value }],
+//         });
 
-        if (!user) {
-          // Nếu không tìm thấy người dùng, tạo mới
-          user = new User({
-            googleId: profile.id,
-            username: profile.displayName,
-            email: profile.emails[0].value,
-            avatarUrl: profile.photos[0].value,
-          });
+//         if (!user) {
+//           // Nếu không tìm thấy người dùng, tạo mới
+//           user = new User({
+//             googleId: profile.id,
+//             username: profile.displayName,
+//             email: profile.emails[0].value,
+//             avatarUrl: profile.photos[0].value,
+//           });
 
-          await user.save();
-        }
+//           await user.save();
+//         }
 
-        // Gọi hàm done để tiếp tục với quá trình đăng nhập
-        return done(null, user);
-      } catch (err) {
-        console.error("Error during authentication:", err); // Log lỗi nếu có
-        return done(err, false);
-      }
-    }
-  )
-);
+//         // Gọi hàm done để tiếp tục với quá trình đăng nhập
+//         return done(null, user);
+//       } catch (err) {
+//         console.error("Error during authentication:", err); // Log lỗi nếu có
+//         return done(err, false);
+//       }
+//     }
+//   )
+// );
 
-// Route khởi tạo quá trình đăng nhập bằng Google
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"], // Các quyền cần lấy từ Google
-  })
-);
+// // Route khởi tạo quá trình đăng nhập bằng Google
+// app.get(
+//   "/auth/google",
+//   passport.authenticate("google", {
+//     scope: ["profile", "email"], // Các quyền cần lấy từ Google
+//   })
+// );
 
 // // Route xử lý callback sau khi Google xác thực
 // app.get(

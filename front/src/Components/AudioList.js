@@ -656,144 +656,162 @@ const AudioList = ({ item }) => {
   };
   console.log(currentSong, "kietlac");
   return (
-    <div className="AudioList">
-      <div className="audioList-title">
-        Danh sách
-        <span> {songs.length} bài hát</span>
-      </div>
-
-      <div className="songsContainer d-flex">
-        {songs.map((song, index) => (
-          <div
-            className="songs"
-            key={index}
-            onClick={() => {
-              setMainSong(song?.song, song?.imgSrc, index);
-            }}
-          >
-            <div className="song d-flex">
-              <div className="imgBox position-relative">
+    <div
+      className="music-app-layout glossy-theme"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "32px",
+        width: "100%",
+      }}
+    >
+      {/* Playlist dạng grid nhiều cột */}
+      <div
+        className="audio-list-modern"
+        style={{ width: "100%", maxWidth: "1400px", margin: "0 auto" }}
+      >
+        <div className="al-title">
+          Danh sách <span>{songs.length} bài hát</span>
+        </div>
+        <div className="al-songs-grid">
+          {songs.map((song, index) => (
+            <div
+              className={`al-song-card${
+                currentSongIndex === index ? " active" : ""
+              }`}
+              key={index}
+              onClick={() => setMainSong(song?.song, song?.imgSrc, index)}
+            >
+              <div className="al-img-wrap">
                 <img src={`http://localhost:4000/${song.imgSrc}`} alt="" />
-                <div className="song-play position-absolute">
+                <div className="al-play-btn">
                   <i className="fa-solid fa-play" />
                 </div>
               </div>
-              <div className="song__heading">
-                <div className="song__heading-name mb-1">{song?.songName} </div>
-                <p className="song__heading-artist mb-0">{song?.artist}</p>
+              <div className="al-info">
+                <div className="al-song-title">{song?.songName}</div>
+                <div className="al-artist">{song?.artist}</div>
               </div>
-              <div className="song__btn">
-                <div
-                  className="song__btn-icon song__btn--favorite hover-btn"
+              <div className="al-actions">
+                <button
+                  className={`al-fav-btn${
+                    favorites.find((item) => item?.song_id?._id === song._id)
+                      ? " liked"
+                      : ""
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite(song._id);
                   }}
+                  title="Yêu thích"
                 >
-                  {favorites.find((item) => item?.song_id?._id === song._id) ? (
-                    <i class="fa-solid fa-heart active"></i>
-                  ) : (
-                    <i className="fa-regular fa-heart" />
-                  )}
-                </div>
-                <div className="song__btn-icon song__btn--different hover-btn">
-                  <i className="fa-solid fa-ellipsis" />
-                </div>
+                  <i
+                    className={
+                      favorites.find((item) => item?.song_id?._id === song._id)
+                        ? "fa-solid fa-heart"
+                        : "fa-regular fa-heart"
+                    }
+                  />
+                </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <MusicPlayer
-        song={song}
-        imgSrc={img}
-        autoplay={auto}
-        currentSong={songs[currentSongIndex]}
-        // currentSongId={songs[currentSongIndex] ? songs[currentSongIndex] : null}
-        // Pass current song ID
-        toggleFavorite={toggleFavorite}
-        setCurrentSongIndex={setCurrentSongIndex}
-        playNextSong={playNextSong}
-        playPreviousSong={playPreviousSong}
-        isLove={favorites.some((item) => {
-          console.log(item, "item");
-
-          return item?.song_id?._id === songs[currentSongIndex]._id;
-        })}
-      />
-      {/* Hiển thị phần gợi ý bài hát */}
-      {userId && (
-        <MusicRecommendations userId={userId} onSongSelect={setMainSong} />
-      )}
-
-      {/* <ListeningHistory userId={userId} onSongSelect={handleHistorySelect} /> */}
-
-      {/* <SuggestedSongs
-        userId={userId}
-        onSongSelect={handleSuggestedSongSelect}
-      /> */}
-
-      {/* <ListeningHistory
-        userId={userId}
-        onSongSelect={(selectedSong) =>
-          setMainSong(selectedSong.song, selectedSong.imgSrc, 0)
-        }
-      /> */}
-
-      {/* Phần đánh giá với biểu tượng ngôi sao */}
-      <div className="rating-section pt-4 pb-5 ps-4">
-        <h3>Đánh giá theo trải nghiệm</h3>
-        <div
-          className="text-center"
-          style={{ fontSize: "1.6rem", marginBottom: "8px" }}
-        >
-          Bạn đánh giá sao về bài hát này?
+          ))}
         </div>
-        <div className="stars">
+      </div>
+      {/* MusicPlayer card */}
+      <div style={{ margin: "0 auto", width: "100%", maxWidth: "420px" }}>
+        <MusicPlayer
+          song={song}
+          imgSrc={img}
+          auto={auto}
+          currentSong={songs[currentSongIndex]}
+          toggleFavorite={toggleFavorite}
+          setCurrentSongIndex={setCurrentSongIndex}
+          playNextSong={playNextSong}
+          playPreviousSong={playPreviousSong}
+          isLove={favorites.some(
+            (item) => item?.song_id?._id === songs[currentSongIndex]?._id
+          )}
+        />
+      </div>
+      {/* Gợi ý nhạc: slider ngang */}
+      {userId && (
+        <div
+          className="music-recommend-section-slider"
+          style={{ width: "100%", maxWidth: "1400px" }}
+        >
+          <div className="music-recommend-title">Gợi ý cho bạn</div>
+          <div className="music-recommend-slider">
+            <MusicRecommendations userId={userId} onSongSelect={setMainSong} />
+          </div>
+        </div>
+      )}
+      {/* Đánh giá */}
+      <div
+        className="al-rating-section"
+        style={{ width: "100%", maxWidth: "1400px" }}
+      >
+        <div className="al-rating-header">
+          <h3>Đánh giá bài hát</h3>
+          <div className="al-rating-summary">
+            <span className="al-rating-score">
+              {ratingInfo.rating?.toFixed(1) || 0}
+            </span>
+            <span className="al-rating-count">
+              ({ratingInfo.count || 0} lượt)
+            </span>
+          </div>
+        </div>
+        <div className="al-stars al-stars-large">
           {[...Array(5)].map((_, index) => (
             <FaStar
               key={index}
-              className={
-                index < rating
-                  ? "star-icon star selected"
-                  : "star-icon star notSelected"
-              }
+              className={index < rating ? "al-star selected" : "al-star"}
               onClick={() => handleRatingClick(index)}
             />
           ))}
         </div>
+        <div className="al-rating-label">Bạn đánh giá sao về bài hát này?</div>
       </div>
-
-      {/* Phần bình luận */}
-      <div className="comments-section">
+      {/* Bình luận */}
+      <div
+        className="al-comments-section"
+        style={{ width: "100%", maxWidth: "1400px" }}
+      >
         <h3>Bình luận</h3>
         {comments.map((comment) => (
-          <div key={comment._id} className="comment-container">
-            {/* Phần comment chính */}
-            <div className="comment">
-              <p>
-                <strong>{comment.user.username}:</strong>
-                {editingCommentId === comment._id ? (
-                  <input
-                    type="text"
-                    value={editedComment}
-                    onChange={(e) => setEditedComment(e.target.value)}
-                  />
-                ) : (
-                  <span>{comment.content}</span>
-                )}
-              </p>
-              {/* Hiển thị đánh giá của bình luận */}
-              <div className="comment-rating">{renderStars(comment.score)}</div>
-
-              <div className="comment-actions">
+          <div key={comment._id} className="al-comment-card">
+            <img
+              className="al-comment-avatar"
+              src={comment.avatarImage || "/default-avatar.png"}
+              alt={comment.user.username}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/default-avatar.png";
+              }}
+            />
+            <div className="al-comment-main">
+              <span className="al-comment-user">{comment.user.username}:</span>
+              {editingCommentId === comment._id ? (
+                <input
+                  type="text"
+                  value={editedComment}
+                  onChange={(e) => setEditedComment(e.target.value)}
+                />
+              ) : (
+                <span className="al-comment-content">{comment.content}</span>
+              )}
+              <div className="al-comment-rating">
+                {renderStars(comment.score)}
+              </div>
+              <div className="al-comment-actions">
                 <FaEllipsisV
                   onClick={() => handleMenuClick(comment._id)}
-                  className="ellipsis-icon"
+                  className="al-ellipsis"
                 />
                 {showMenuId === comment._id && (
-                  <div className="menu-options">
+                  <div className="al-menu-options">
                     {editingCommentId === comment._id ? (
                       <button onClick={handleUpdateComment}>Lưu</button>
                     ) : (
@@ -815,14 +833,11 @@ const AudioList = ({ item }) => {
                 )}
               </div>
             </div>
-
-            {/* Phần form trả lời */}
             {showReplyForm === comment._id && (
-              <div className="reply-form">
-                <p className="replying-to">
-                  Bạn đang trả lời người dùng{" "}
-                  <strong>{comment.user.username}</strong>
-                </p>
+              <div className="al-reply-form">
+                <span className="al-replying-to">
+                  Bạn đang trả lời <b>{comment.user.username}</b>
+                </span>
                 <input
                   type="text"
                   placeholder="Nhập phản hồi..."
@@ -834,37 +849,25 @@ const AudioList = ({ item }) => {
                 </button>
               </div>
             )}
-
-            {/* Phần danh sách phản hồi */}
-            <div className="replies">
+            <div className="al-replies">
               {replies[comment._id]?.map((reply) => (
-                <div key={reply._id} className="reply">
-                  Bạn đã trả lời người dùng{" "}
-                  <strong>{comment.user.username}</strong>
-                  <p>
-                    <strong>{reply.user.username}:</strong>
-                    <span>{reply.content}</span>
-                  </p>
+                <div key={reply._id} className="al-reply">
+                  <span className="al-reply-user">{reply.user.username}:</span>
+                  <span className="al-reply-content">{reply.content}</span>
                 </div>
               ))}
             </div>
           </div>
         ))}
-
-        {/* Phần bình luận mới */}
-        <div className="d-flex">
+        <div className="al-new-comment">
           <input
             type="text"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Viết bình luận công khai..."
           />
-          <button
-            onClick={addCommentAndRating}
-            className="d-flex align-items-center ms-3"
-          >
-            <i class="fa-solid fa-paper-plane fs-4"></i>
-            <span className="ms-3 fs-4 fw-bold">Gửi</span>
+          <button onClick={addCommentAndRating} className="al-send-btn">
+            <i className="fa-solid fa-paper-plane" /> Gửi
           </button>
         </div>
       </div>

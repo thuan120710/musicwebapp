@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/MainContainer.css";
 import { Banner } from "./Banner";
+
 import { AudioList } from "./AudioList";
 import { BiSearchAlt } from "react-icons/bi";
 import { fetchCategories } from "../Admin/actions/CategoryAction";
@@ -8,7 +9,6 @@ import { fetchSong } from "../Admin/actions/SongAction";
 import { connect } from "react-redux";
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
 import Header from "./Header";
-import { Link } from "react-router-dom";
 
 function MainContainer(props) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -21,7 +21,7 @@ function MainContainer(props) {
 
   useEffect(() => {
     setCopyData(props.songs);
-  }, [props.songs]);
+  }, []);
 
   const handleCategoryClick = (category) => {
     let filteredData;
@@ -59,47 +59,7 @@ function MainContainer(props) {
 
   return (
     <div className="mainContainer">
-      <Header
-        onSearch={handleSearch}
-        onPrevSlide={prevSlide}
-        onNextSlide={nextSlide}
-      ></Header>
-
-      <div
-        style={{
-          backgroundColor: "#121212",
-          margin: "15px 8px 0 0",
-          borderRadius: "10px",
-        }}
-      >
-        <button className="relative group header__favorite-group hover-btn">
-          <div className="relative header__favorite-image">
-            <img
-              alt="Image"
-              loading="lazy"
-              decoding="async"
-              data-nimg="fill"
-              className="object-cover"
-              sizes="100vw"
-              src={`http://localhost:4000/uploads/liked.png`}
-              style={{
-                position: "absolute",
-                height: "100%",
-                width: "100%",
-                inset: "0px",
-                color: "transparent",
-                borderRadius: "50%",
-              }}
-            />
-          </div>
-          <Link
-            to="/favorites"
-            className="header__favorite-title truncate ms-3"
-          >
-            Bài hát đã thích
-          </Link>
-        </button>
-      </div>
+      <Header></Header>
 
       <div className="menuList">
         <ul>
@@ -122,6 +82,19 @@ function MainContainer(props) {
             </li>
           ))}
         </ul>
+
+        <p>
+          <div className="searchBox">
+            <input
+              type="text"
+              placeholder="Search..."
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+            <i>
+              <BiSearchAlt />
+            </i>
+          </div>
+        </p>
       </div>
       <br />
       <br />
